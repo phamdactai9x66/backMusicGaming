@@ -1,0 +1,67 @@
+
+<% 
+    let save_html="";
+
+    data_cate.forEach((curren_value,index) => {
+        let date_create= new Date(curren_value.createdAt);
+        let date_update= new Date(curren_value.updatedAt);
+        save_html+=`
+        <tr class="delete_element2" id_product_find="${curren_value.id}" >
+            <td>${index}</td>
+            <td class="name_eng">${curren_value.name}</td>
+            <td >${date_create.getFullYear()}/${date_create.getMonth() + 1}/${date_create.getDate()}</td>
+            <td >${date_update.getFullYear()}/${date_update.getMonth() + 1}/${date_update.getDate()}</td>
+            <td style="text-align: center;"><a href="/category/delete/${curren_value.id}" class="delete_element">remove</a>
+                <a href="/category/edit_cate/${curren_value.id}" class="edit_element">edit</a></td>
+        </tr>
+        `
+    });
+
+%> 
+
+
+   <div class="main_ad">
+    <div class="brand_web">
+    list_cate
+</div>
+            <div class="list_something" style="height: 100%;">
+                <form action="" method="post" class="searching_element">
+                    <input type="text" name="" id="searching" placeholder="searching">
+                    <select name="" id="select_product">
+                        <option value="sort_price_default">default_sort</option>
+                        <option value="up_price">up_price</option>
+                        <option value="down_price">down_price</option>
+                    </select>
+                </form>
+                <table id="table_parent2">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>date_create</th>
+                            <th>date_update</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_parent3">
+                        <%- save_html %> 
+                            <!-- <tr>
+                                <td>index </td>
+                                <td class="name_eng">samsung </td>
+                                <td><img src="" alt=""></td>
+                                <td>12312</td>
+                                <td>detail</td>
+                                <td style="text-align: center;"><button class="delete_element" id_product="">remove</button>
+                                    <button class="edit_element" id_product="">edit</button></td>
+                            </tr> -->
+                            
+
+                        
+                    </tbody>
+                    
+                </table>
+               <div>
+                <a href="/category/" class="submit">add_new_cate</a>
+               </div>
+            </div>
+    </div>

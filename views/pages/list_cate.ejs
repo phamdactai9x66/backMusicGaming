@@ -1,0 +1,44 @@
+<% 
+    let save_string="";
+    
+    data.forEach((curren_value,index) => {
+        save_string+=`
+        <tr>
+            <th scope="row">${index}</th>
+            <td>${curren_value.name}</td>
+            <td>${curren_value.name_english}</td>
+            <td style="text-align: center;">
+               <div >
+                <form action="/category/${curren_value._id}?_method=DELETE" method="POST" style="display: inline-block;">
+                    <button class="btn btn-danger">Delete</button></form>
+                
+                <a href="/category/${curren_value._id}/update" class="btn btn-primary">update</a></td>
+                </div>
+          </tr>
+        `
+    });
+%> 
+
+<style>
+    th,td{
+        vertical-align: middle;
+    }
+</style>
+
+<section style="max-width: 970px;margin: 0 auto; margin-top: 20px;">
+    <table class="table"  >
+        <thead >
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">name</th>
+            <th scope="col">nameEnglish</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+         <%- save_string %> 
+        </tbody>
+      </table>
+      <a href="/category/add" class="btn btn-primary">create categories</a>
+</section>
+

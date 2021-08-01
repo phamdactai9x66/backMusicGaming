@@ -1,0 +1,83 @@
+<% const check_sign_up = typeof message != "undefined" ? message : "" %> 
+
+
+
+
+<div style="max-width: 570px; margin: 0 auto;">
+  <!-- <% if(check_sign_up){ %> 
+  <div class="alert alert-info" role="alert" >
+    A simple info alert—check it out!
+  </div>
+  <% } %>  -->
+    <form method="POST" action="/user/sign_in" >
+        
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    
+        <div class="form-floating">
+          <input type="text" class="form-control" id="floatingInput" name="userName" placeholder="name@example.com" required>
+          <label for="floatingInput">Username</label>
+        </div>
+        <div class="form-floating" style="margin-top: 10px;">
+          <input type="password" class="form-control"  id="floatingPassword" name="passWord" placeholder="Password" required>
+          <label for="floatingPassword">Password</label>
+        </div>
+        <div class="checkbox mb-3" style="margin-top: 10px;">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit" style="margin-bottom: 5px;">Sign in</button>
+        
+        <div class="bottom-action clearfix">
+        
+          <a href="/user/Account/checkAccount" class="float-right">Forgot Password?</a>
+          <a href="/user/auth/facebook">Login with Facebook</a>
+      </div>
+      </form>
+      <button type="button" class="g-signin2" data-onsuccess="onSignIn"></button>
+      
+      <br>
+      <!-- <a href="#" onclick="signOut();">Sign out</a> -->
+      <p class="text-center small">Don't have an account? <a href="/user/sign_up">Sign up here!</a></p>
+</div>
+<a href="#" onclick="signOut();">Sign out</a>
+
+
+<script>
+
+// let save1=document.querySelector(".g-signin2")
+// save1.addEventListener("click",() =>{
+
+// })
+async function onSignIn(googleUser) {
+ 
+ console.log(googleUser)
+  var id_token = googleUser.getAuthResponse().id_token;
+        // console.log(id_token);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/user/user/testsign_in');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+          console.log('Signed in as: ' + xhr.responseText);
+            if(xhr.responseText == 'successfully'){
+                signOut();
+                location.assign('/category')
+                console.log('Signed in as: ' + xhr.responseText);
+            }
+        };
+        xhr.send(JSON.stringify({token : id_token}));
+}
+
+function signOut() {
+    // console.log("xinchas")
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+
+
+</script>
+
+

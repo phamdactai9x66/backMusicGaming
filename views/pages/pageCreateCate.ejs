@@ -1,0 +1,29 @@
+<section style="max-width: 770px; margin: 0 auto;">
+    
+</div>
+<div class="col-md-12 col-lg-12">
+  <h4 class="mb-3">Create New Category</h4>
+  <form action="/category/add" class="needs-validation"  method="POST" >
+    <div class="row g-3">
+      <div class="col-sm-6">
+        <label for="firstName" class="form-label">name</label>
+        <input type="text" class="form-control" id="firstName" placeholder="" name="name" required>
+        <div class="invalid-feedback">
+          Valid name is required.
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <label for="lastName" class="form-label">name_english</label>
+        <input type="text" class="form-control" id="lastName" placeholder="" name="name_english" required>
+        <div class="invalid-feedback">
+          Valid name_english is required.
+        </div>
+      </div>
+
+    <hr class="my-4">
+
+    <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to Sign up</button>
+  </form>
+  <a href="/category" class="btn btn-primary" style="width: auto;">List Cate</a>
+</section>
