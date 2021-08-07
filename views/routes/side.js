@@ -2,8 +2,8 @@ var express = require('express')
 
 var router = express.Router()
 
-const about_Controller=require("../app/controllers/sideControllers");
-const { check_login, checkAuthe } = require("../app/validator/method_common");
+const about_Controller = require("../app/controllers/sideControllers");
 
-router.get("/",check_login,about_Controller.index);
-module.exports= router;
+
+router.get("/", about_Controller.index);
+module.exports = router;

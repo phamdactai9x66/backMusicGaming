@@ -9,7 +9,6 @@ let express_layouts = require("express-ejs-layouts");
 
 
 const db_NoSQL = require("./views/config/db");
-const pass_local = require("./views/app/validator/pass_local")
 let passport = require("passport");
 
 const routes = require("./views/routes");
@@ -17,30 +16,30 @@ const { render } = require("node-sass");
 const app = express()
 const port = 5000
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, { cors: { origin: "*" } })
-let chat = require("./views/app/models/chat");
-app.use(cors())
+// const io = require("socket.io")(server, { cors: { origin: "*" } })
+// let chat = require("./views/app/models/chat");
+// app.use(cors())
 
-async function handlePromise(params) {
-  try {
-    let data = await params;
-    return [data, null];
-  } catch (error) {
-    return [null, error];
-  }
-}
+// async function handlePromise(params) {
+//   try {
+//     let data = await params;
+//     return [data, null];
+//   } catch (error) {
+//     return [null, error];
+//   }
+// }
 
-io.on("connection", (socket) => {
-  // console.log("xin chao nhe");
-  socket.on("test1", async (dataResponse) => {
-    let createChat = new chat({ ...dataResponse });
+// io.on("connection", (socket) => {
+//   // console.log("xin chao nhe");
+//   socket.on("test1", async (dataResponse) => {
+//     let createChat = new chat({ ...dataResponse });
 
-    let [data, error] = await handlePromise(createChat.save());
-    if (data) {
-      io.emit("dataResponse", data);
-    }
-  })
-})
+//     let [data, error] = await handlePromise(createChat.save());
+//     if (data) {
+//       io.emit("dataResponse", data);
+//     }
+//   })
+// })
 
 
 
