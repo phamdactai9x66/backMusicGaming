@@ -1,11 +1,11 @@
-const category = require("../models/category");
+const category = require("../models/topic");
 
 
 
 class sides {
     async index(req, res, next) {
         res.json({
-            status: "xin chao"
+
         })
     }
 }
