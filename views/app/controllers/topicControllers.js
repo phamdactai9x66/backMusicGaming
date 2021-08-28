@@ -61,9 +61,7 @@ class topics {
                 }
 
                 const uploadFile = files['image'];
-                
                 const indexOfPath = uploadFile.path.indexOf('upload')
-                
                 const cutPath = uploadFile.path.slice(indexOfPath);
                 
                 const checkImage = cutPath.split('.')[1];
