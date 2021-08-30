@@ -78,20 +78,18 @@ class topics {
         form.parse(req, (err, fields, files) => {
             if(err){
                 return res.status(400).json({
-                    message: "Error 400. Add New Topic"
+                    message: "Error 400. Add New Topic",
+                    data: [],
+                    status: statusF
                 })
             }
           
             // check name topic = ''
             if(fields.name === ''){
                 return res.json({
-                    message: "Name is required."
-                })
-            }
-
-            if(!files.image){
-                return res.json({
-                    message: "Image is required>"
+                    message: "Name is required.",
+                    data: [],
+                    status: statusF
                 })
             }
 
@@ -110,7 +108,8 @@ class topics {
                 if(topicExisted){
                     return res.json({
                         message: `this topic been exist in database`,
-                        result: topicExisted
+                        data: [],
+                        status: statusF
                     })
                 }
 
@@ -122,7 +121,9 @@ class topics {
                 if(checkImage === undefined){
                     console.log('true')
                     return res.json({
-                        message: "Image is required"
+                        message: "Image is required",
+                        data: [],
+                        status: statusF
                     })
                 }
                 
@@ -134,10 +135,16 @@ class topics {
                 createTopic.save( (err, data) => {
                     if(err){
                         return res.json({
-                            message: err
+                            message: err,
+                            data: [],
+                            status: statusF
                         })
                     }
-                    res.json({data})
+                    res.json({
+                        data: data,
+                        message: 'add new topic is successfully',
+                        status: statusS
+                    })
                 })
              
             })

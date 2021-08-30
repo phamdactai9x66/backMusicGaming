@@ -1,150 +1,239 @@
 const modelPlaylist = require("../models/playlist");
-let { statusF, statusS, localhost } = require("../validator/methodCommon");
-let mongoess = require("mongoose");
-let path = require("path");
-
-let formidable = require("formidable")
-
-
+const mongoose = require("mongoose");
+const formidable = require("formidable");
+const path = require("path");
+const { statusF, statusS } = require("../validator/methodCommon");
 
 class playlist {
-    async index(req, res, next) {
-        let { _page, _limit, name, _id } = req.query;
-        modelPlaylist.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
-            .exec((err, response) => {
-                if (err || !response) {
-                    return res.json({
-                        status: statusF,
-                        data: [],
-                        message: `we have some error:${err}`
-                    })
-                } else {
-                    if (name) {
-                        let findName = response.filter(currenT => {
-                            let nameTopic = currenT.name.toLocaleLowerCase();
-                            let ParamsName = name.toLocaleLowerCase();
-
-                            return nameTopic.indexOf(ParamsName) != -1;
-                        })
-                        return res.json({
-                            status: statusS,
-                            data: findName,
-                            message: "get data successfully"
-                        })
-                    } else if (_id) {
-                        let findId = response.find(currenT => currenT._id == _id);
-                        return res.json({
-                            status: statusS,
-                            data: findId,
-                            message: "get data successfully"
-                        })
-                    }
-                    return res.json({
-                        status: statusS,
-                        data: response,
-                        message: ``
-                    })
-                }
-
-            })
-    }
-    getOne(req, res) {
-        let { idPlaylist } = req.params;
-        let condition = {
-            _id: mongoess.Types.ObjectId(idPlaylist)
+  async index(req, res, next) {
+    let { _page, _limit, name, id } = req.query;
+    await modelPlaylist
+      .find({})
+      .limit(_limit * 1)
+      .skip((_page - 1) * _limit)
+      .select({})
+      .exec((err, response) => {
+        if (err || !response) {
+          return res.json({
+            status: statusF,
+            data: [],
+            message: err,
+          });
+        } else {
+          if (name) {
+            let findName = response.filter((item) => {
+              let namePlaylist = item.name.toLocaleLowerCase();
+              let ParamsName = name.toLocaleLowerCase();
+              return namePlaylist.indexOf(ParamsName) != -1;
+            });
+            return res.json({
+              status: statusS,
+              data: findName,
+              message: "Get data successfully",
+            });
+          } else if (id) {
+            let findId = response.find((item) => item._id == id);
+            return res.json({
+              status: statusS,
+              data: findId,
+              message: "Get data successfully",
+            });
+          }
+          res.json({
+            status: statusS,
+            data: response,
+            message: "Get data successfully",
+          });
         }
-        modelPlaylist.findById(condition).exec((error, response) => {
-            if (error || !response) {
-                return res.json({
-                    status: statusF,
-                    data: [],
-                    message: `We have some error:${response}`
-                })
-            } else {
-                return res.json({
-                    status: statusS,
-                    data: response,
-                    message: ``
-                })
-            }
-        })
+      });
+  }
 
+  async getOnePlaylist(req, res) {
+    let { id } = req.params;
+    let condition = {
+      _id: mongoose.Types.ObjectId(id),
+    };
+    await modelPlaylist.findById(condition).exec((error, response) => {
+      if (error || !response) {
+        return res.json({
+          status: statusF,
+          data: [],
+          message: `We have some error: ${error}`,
+        });
+      } else {
+        res.json({
+          status: statusS,
+          data: [response],
+          message: `Get a play list successfully`,
+        });
+      }
+    });
+  }
 
-    }
-    createPlaylist(req, res) {
+  addNewPlayList(req, res) {
+    let form = new formidable.IncomingForm();
+    form.uploadDir = path.join(__dirname, "../../public/uploads");
+    form.keepExtensions = true;
+    form.maxFieldsSize = 1 * 1024 * 1024;
+    form.multiples = true;
 
-        let form1 = formidable.IncomingForm();
-        form1.uploadDir = path.join(__dirname, "../../public/uploads");
-        form1.keepExtensions = true;
-        form1.maxFieldsSize = 1 * 1024 * 1024;
-        form1.multiples = true;
-        form1.parse(req, (err, all_input, files) => {
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        return res.status(400).json({
+          message: "Error 400. Add New Play list failed.",
+          data: [],
+          status: statusF,
+        });
+      }
 
-            if (all_input.name && all_input.id_topic && files["image"]) {
-                let condition = {
-                    name: all_input.name.toLocaleLowerCase()
-                }
-                modelPlaylist.find(condition).exec((error, response) => {
-                    if (error) {
-                        return res.json({
-                            status: statusF,
-                            data: [],
-                            message: `We have some error:${error}`
-                        })
-                    }
-                    if (response.length >= 1) {
+      if (fields.name === "") {
+        return res.json({
+          message: "Name is required.",
+          data: [],
+          status: statusF,
+        });
+      }
 
-                        return res.json({
-                            status: statusF,
-                            data: [],
-                            message: `this playlist was have in database !`
-                        })
-                    } else {
-                        const upload_files = files["image"];
+      let condition = {
+        name: fields.name,
+      };
 
-                        let find_index_path = upload_files.path.indexOf("upload");
-                        let cut_path = upload_files.path.slice(find_index_path);
+      modelPlaylist.findOne(condition).exec((err, playlistExisted) => {
+        if (err) {
+          return res.json({
+            message: "Error: " + err,
+            data: [],
+            status: statusF,
+          });
+        }
 
-                        let format_form = {
-                            name: all_input.name,
+        if (playlistExisted) {
+          return res.json({
+            message: `This playlist been exist in database`,
+            data: [],
+            status: statusF,
+          });
+        }
 
-                            image: localhost + cut_path,
-                            id_Topic: mongoess.Types.ObjectId(all_input.id_topic)
-                        }
-                        let create_playList = new modelPlaylist(format_form);
-                        create_playList.save((err, product1) => {
-                            if (err) {
-                                res.json({
-                                    status: statusF,
-                                    message: `We have few error: ${err}`
-                                })
-                            } else {
-                                res.json({
-                                    status: statusS,
-                                    data: product1,
-                                    message: "Add Product Successfully"
-                                })
+        const uploadFile = files["image"];
 
-                            }
-                        })
-                    }
+        const indexOfPath = uploadFile.path.indexOf("upload");
+        const cutPath = uploadFile.path.slice(indexOfPath);
 
+        const checkImage = cutPath.split(".")[1];
+        if (checkImage === undefined) {
+          console.log("true");
+          return res.json({
+            message: "Image is required",
+            data: [],
+            status: statusF,
+          });
+        }
 
-                })
+        const data = {
+          ...fields,
+          image: `http://localhost:5000/${cutPath}`,
+        };
+        let createPlaylist = new modelPlaylist(data);
+        createPlaylist.save((err, data) => {
+          if (err) {
+            return res.json({
+              message: err,
+              status: statusF,
+              data: [],
+            });
+          }
+          res.json({
+            data: [data],
+            message: "add new playlist successfully",
+            status: statusS,
+          });
+        });
+      });
+    });
+  }
 
+  removePlayList(req, res) {
+    const condition = {
+      _id: mongoose.Types.ObjectId(req.params.id),
+    };
+    modelPlaylist.findOneAndRemove(condition).exec((err) => {
+      if (err) {
+        return res.json({
+          status: statusF,
+          message: "Error: " + err,
+        });
+      } else {
+        return res.json({
+          status: statusS,
+          message: "Delete successfully",
+        });
+      }
+    });
+  }
 
+  updatePlayList(req, res) {
+    let form = new formidable.IncomingForm();
+    form.uploadDir = path.join(__dirname, "../../public/uploads");
+    form.keepExtensions = true;
+    form.maxFieldsSize = 1 * 1024 * 1024;
+    form.multiples = true;
 
-            } else {
-                res.json({
-                    status: statusF,
-                    data: [],
-                    message: "We don't allow input is blank !"
-                })
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        return res.status(400).json({
+          message: "Error 400. Add New Play list failed.",
+          status: statusF,
+          data: [],
+        });
+      }
 
-            }
-        })
+      if (fields.name === "") {
+        return res.json({
+          message: "Name is required.",
+          status: statusF,
+          data: [],
+        });
+      }
 
+      let condition = {
+        _id: mongoose.Types.ObjectId(req.params.id),
+      };
 
-    }
+      const uploadFile = files["image"];
+      const indexOfPath = uploadFile.path.indexOf("upload");
+      const cutPath = uploadFile.path.slice(indexOfPath);
+
+      const checkImage = cutPath.split(".")[1];
+      let data = {};
+      if (checkImage === undefined) {
+        data = {
+          ...fields,
+        };
+      } else {
+        data = {
+          ...fields,
+          image: `http://localhost:5000/${cutPath}`,
+        };
+      }
+
+      modelPlaylist
+        .findOneAndUpdate(condition, { $set: data }, { new: true })
+        .exec((err, newData) => {
+          if (err) {
+            return res.json({
+              status: statusF,
+              data: [],
+              message: "Update playlist failed",
+            });
+          }
+          res.json({
+            status: statusS,
+            data: newData,
+            message: "Update playlist successfully.",
+          });
+        });
+    });
+  }
 }
-module.exports = new playlist;
+module.exports = new playlist();
