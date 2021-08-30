@@ -68,7 +68,7 @@ class topics {
         })
     }
 
-    addNewTopic(req, res){
+    addNewTopic(req, res) {
         let form = new formidable.IncomingForm();
         form.uploadDir = path.join(__dirname, "../../public/uploads");
         form.keepExtensions = true;
@@ -76,16 +76,16 @@ class topics {
         form.multiples = true;
 
         form.parse(req, (err, fields, files) => {
-            if(err){
+            if (err) {
                 return res.status(400).json({
                     message: "Error 400. Add New Topic",
                     data: [],
                     status: statusF
                 })
             }
-          
+
             // check name topic = ''
-            if(fields.name === ''){
+            if (fields.name === '') {
                 return res.json({
                     message: "Name is required.",
                     data: [],
@@ -97,15 +97,15 @@ class topics {
                 // name: new RegExp(`${fields.name}`, 'i')
                 name: fields.name
             }
-            
+
             topic.findOne(condition).exec((err, topicExisted) => {
-                if(err){
+                if (err) {
                     return res.json({
                         message: "Error: " + err
                     })
                 }
-                
-                if(topicExisted){
+
+                if (topicExisted) {
                     return res.json({
                         message: `this topic been exist in database`,
                         data: [],
@@ -116,9 +116,9 @@ class topics {
                 const uploadFile = files['image'];
                 const indexOfPath = uploadFile.path.indexOf('upload')
                 const cutPath = uploadFile.path.slice(indexOfPath);
-                
+
                 const checkImage = cutPath.split('.')[1];
-                if(checkImage === undefined){
+                if (checkImage === undefined) {
                     console.log('true')
                     return res.json({
                         message: "Image is required",
@@ -126,14 +126,14 @@ class topics {
                         status: statusF
                     })
                 }
-                
+
                 const data = {
                     ...fields,
                     image: `http://localhost:5000/${cutPath}`
                 }
                 let createTopic = new topic(data);
-                createTopic.save( (err, data) => {
-                    if(err){
+                createTopic.save((err, data) => {
+                    if (err) {
                         return res.json({
                             message: err,
                             data: [],
@@ -146,9 +146,94 @@ class topics {
                         status: statusS
                     })
                 })
-             
+
             })
         })
     }
+    updateTopic(req, res) {
+        let form = new formidable.IncomingForm();
+        form.uploadDir = path.join(__dirname, "../../public/uploads");
+        form.keepExtensions = true;
+        form.maxFieldsSize = 1 * 1024 * 1024;
+        form.multiples = true;
+
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                return res.status(400).json({
+                    message: "Error 400. Add New Topic failed.",
+                    status: statusF,
+                    data: [],
+                });
+            }
+
+            if (fields.name === "") {
+                return res.json({
+                    message: "Name is required.",
+                    status: statusF,
+                    data: [],
+                });
+            }
+
+            let condition = {
+                _id: mongoose.Types.ObjectId(req.params.idTopic),
+            };
+
+            const uploadFile = files["image"];
+            const indexOfPath = uploadFile.path.indexOf("upload");
+            const cutPath = uploadFile.path.slice(indexOfPath);
+
+            const checkImage = cutPath.split(".")[1];
+            let data = {};
+            if (checkImage === undefined) {
+                data = {
+                    ...fields,
+                };
+            } else {
+                data = {
+                    ...fields,
+                    image: `http://localhost:5000/${cutPath}`,
+                };
+            }
+
+            topic.findOneAndUpdate(condition, { $set: data }, { new: true })
+                .exec((err, newData) => {
+                    if (err) {
+                        return res.json({
+                            status: statusF,
+                            data: [],
+                            message: "Update topuc failed",
+                        });
+                    }
+                    res.json({
+                        status: statusS,
+                        data: newData,
+                        message: "Update playlist successfully.",
+                    });
+                });
+        });
+
+    }
+    deleteTopic(req, res) {
+        const id = {
+            _id: mongoose.Types.ObjectId(req.params.idTopic)
+        }
+        topic.findOneAndRemove(id)
+            .exec((err) => {
+                if (err) {
+                    res.json({
+                        status: statusF,
+                        message: err
+                    })
+                } else {
+                    res.json({
+                        status: statusS,
+
+                        message: "Delete topic successfully",
+                    })
+                }
+            })
+    }
+
+
 }
 module.exports = new topics;
