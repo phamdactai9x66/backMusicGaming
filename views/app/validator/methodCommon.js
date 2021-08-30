@@ -1,5 +1,6 @@
 // 
 module.exports = {
     statusS: "successfully",
-    statusF: "failed"
+    statusF: "failed",
+    localhost: "http://localhost:5000/"
 }
