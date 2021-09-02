@@ -8,7 +8,8 @@ function routes(app) {
   app.use("/playlist", playlist);
   app.use("/songCate", songCate);
   app.use("/topic", topic);
-  app.use("/", side);
   app.use("/playlistSong", playlistSong);
-}
+  
+  app.use("/", side);
+
 module.exports = routes;

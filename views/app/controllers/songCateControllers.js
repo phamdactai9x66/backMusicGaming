@@ -149,7 +149,7 @@ class songCate {
 
 
     }
-    async editSongCate(req, res) {
+    editSongCate(req, res) {
         let form1 = new formidable.IncomingForm();
         form1.uploadDir = path.join(__dirname, "../../public/uploads");
         form1.keepExtensions = true;
