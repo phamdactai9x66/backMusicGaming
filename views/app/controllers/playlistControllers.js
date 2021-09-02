@@ -1,4 +1,5 @@
 const modelPlaylist = require("../models/playlist");
+const modelPlaylistSong = require("../models/playlistSong");
 const mongoose = require("mongoose");
 const formidable = require("formidable");
 const path = require("path");
@@ -157,17 +158,33 @@ class playlist {
     const condition = {
       _id: mongoose.Types.ObjectId(req.params.id),
     };
-    modelPlaylist.findOneAndRemove(condition).exec((err) => {
+    modelPlaylist.findOneAndRemove(condition).exec((err, deletedPlaylist) => {
       if (err) {
         return res.json({
           status: statusF,
           message: "Error: " + err,
         });
       } else {
-        return res.json({
-          status: statusS,
-          message: "Delete successfully",
-        });
+        const attr = {
+          id_Playlist: condition._id,
+        };
+        modelPlaylistSong
+          .findOneAndRemove(attr)
+          .exec((err, deletedPlaylistSong) => {
+            if (err) {
+              return res.json({
+                status: statusF,
+                message: "Error: " + err,
+              });
+            } else {
+              return res.json({
+                status: statusS,
+                message: "Delete successfully",
+                playlistsong: deletedPlaylistSong,
+                playlist: deletedPlaylist,
+              });
+            }
+          });
       }
     });
   }
