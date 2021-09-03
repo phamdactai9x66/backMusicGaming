@@ -3,7 +3,7 @@ const modelPlaylistSong = require("../models/playlistSong");
 const mongoose = require("mongoose");
 const formidable = require("formidable");
 const path = require("path");
-const { statusF, statusS } = require("../validator/methodCommon");
+const { statusF, statusS, extensionImage, extensionAudio } = require("../validator/methodCommon");
 
 class playlist {
   async index(req, res, next) {
@@ -122,13 +122,19 @@ class playlist {
         const cutPath = uploadFile.path.slice(indexOfPath);
 
         const checkImage = cutPath.split(".")[1];
-        if (checkImage === undefined) {
-          console.log("true");
+        if (!checkImage) {
           return res.json({
-            message: "Image is required",
-            data: [],
             status: statusF,
-          });
+            data: [],
+            message: `We don't allow file is blank !`
+          })
+        }
+        if (!extensionImage.includes(checkImage)) {
+          return res.json({
+            status: statusF,
+            data: [],
+            message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+          })
         }
 
         const data = {
@@ -223,15 +229,24 @@ class playlist {
 
       const checkImage = cutPath.split(".")[1];
       let data = {};
-      if (checkImage === undefined) {
-        data = {
-          ...fields,
-        };
-      } else {
-        data = {
-          ...fields,
-          image: `http://localhost:5000/${cutPath}`,
-        };
+      data = {
+        ...fields,
+      };
+
+      if (checkImage) {
+        if (extensionImage.includes(checkImage)) {
+          data = {
+            ...fields,
+            image: `http://localhost:5000/${cutPath}`,
+          };
+        } else {
+          return res.json({
+            status: statusF,
+            data: [],
+            message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+          })
+
+        }
       }
 
       modelPlaylist
