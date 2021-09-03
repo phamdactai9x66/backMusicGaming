@@ -9,7 +9,8 @@ function routes(app) {
   app.use("/songCate", songCate);
   app.use("/topic", topic);
   app.use("/playlistSong", playlistSong);
-  
+
   app.use("/", side);
+}
 
 module.exports = routes;

@@ -1,9 +1,14 @@
 const modelPlaylistSong = require("../models/playlistSong");
 const { statusS, statusF } = require("../validator/methodCommon");
+let mongoose = require("mongoose")
 
 class playlistSong {
-  async index(req, res, next) {
-    await modelPlaylistSong.find({}).exec((err, data) => {
+  index(req, res, next) {
+    let { id_PlayList } = req.query;
+    let condition = {
+      id_PlayList: mongoose.Types.ObjectId(id_PlayList)
+    }
+    modelPlaylistSong.find(condition).exec((err, data) => {
       if (err) {
         return res.json({
           message: "Get playlistsong failed.",

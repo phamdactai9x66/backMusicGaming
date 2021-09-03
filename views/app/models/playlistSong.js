@@ -6,7 +6,6 @@ const Schema = mongoose.Schema; //generate variable references to mongoose schem
 
 const playlistSong = new Schema(
   {
-    //chung ta dang mo ta cai luc do(schema) trong colection theme
     id_PlayList: {
       type: Schema.ObjectId,
     },
