@@ -6,8 +6,13 @@ class playlistSong {
   index(req, res, next) {
     let { id_PlayList } = req.query;
     let condition = {
-      id_PlayList: mongoose.Types.ObjectId(id_PlayList)
     }
+    if (id_PlayList) {
+      condition = {
+        ...condition, id_PlayList: mongoose.Types.ObjectId(id_PlayList)
+      }
+    }
+
     modelPlaylistSong.find(condition).exec((err, data) => {
       if (err) {
         return res.json({
@@ -16,6 +21,7 @@ class playlistSong {
           data: [],
         });
       } else {
+        console.log(data);
         return res.json({
           message: "Get playlistsong successfully.",
           status: statusS,
@@ -23,6 +29,11 @@ class playlistSong {
         });
       }
     });
+  }
+  createPlaylist(req, res) {
+    res.json({
+      message: "xin chao"
+    })
   }
 }
 module.exports = new playlistSong();
