@@ -1,6 +1,6 @@
 const topic = require("../models/topic");
 const mongoose = require("mongoose")
-let { statusS, statusF } = require("../validator/methodCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/methodCommon");
 const formidable = require('formidable');
 const path = require('path')
 
@@ -118,12 +118,18 @@ class topics {
                 const cutPath = uploadFile.path.slice(indexOfPath);
 
                 const checkImage = cutPath.split('.')[1];
-                if (checkImage === undefined) {
-                    console.log('true')
+                if (!checkImage) {
                     return res.json({
-                        message: "Image is required",
+                        status: statusF,
                         data: [],
-                        status: statusF
+                        message: `We don't allow file is blank !`
+                    })
+                }
+                if (!extensionImage.includes(checkImage)) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
                     })
                 }
 
@@ -183,18 +189,22 @@ class topics {
             const cutPath = uploadFile.path.slice(indexOfPath);
 
             const checkImage = cutPath.split(".")[1];
-            let data = {};
-            if (checkImage === undefined) {
-                data = {
-                    ...fields,
-                };
-            } else {
-                data = {
-                    ...fields,
-                    image: `http://localhost:5000/${cutPath}`,
-                };
+            let data = {
+                ...fields
+            };
+            if (checkImage) {
+                if (extensionImage.includes(checkImage)) {
+                    format_form = {
+                        ...format_form, image: localhost + cutPath
+                    }
+                } else {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+                    })
+                }
             }
-
             topic.findOneAndUpdate(condition, { $set: data }, { new: true })
                 .exec((err, newData) => {
                     if (err) {

@@ -1,5 +1,5 @@
 const songCateModel = require("../models/songCate");
-let { statusF, statusS, localhost } = require("../validator/methodCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/methodCommon");
 let mongoess = require("mongoose");
 let path = require("path");
 
@@ -113,6 +113,14 @@ class songCate {
                                 message: `We don't allow file is blank !`
                             })
                         }
+                        if (!extensionImage.includes(getExtension)) {
+                            return res.json({
+                                status: statusF,
+                                data: [],
+                                message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+                            })
+                        }
+
                         let format_form = {
                             name: all_input.name,
 
@@ -155,12 +163,10 @@ class songCate {
         form1.keepExtensions = true;
         form1.maxFieldsSize = 1 * 1024 * 1024;
         form1.multiples = true;
-        var save_extention_file = ["image/jpg", "image/gif", "image/png", "image/jpeg"];
         form1.parse(req, async (err, input_all, files) => {
 
             const upload_files = files["image"];
             let get_id = req.params.idsongCate;
-            var get_extention = upload_files.type;
 
             const condition = {
                 _id: mongoess.Types.ObjectId(get_id)
@@ -169,11 +175,21 @@ class songCate {
                 name: input_all.name,
                 id_Topic: mongoess.Types.ObjectId(input_all.id_Topic)
             }
-            if (save_extention_file.includes(get_extention)) {
-                let find_index_path = upload_files.path.indexOf("upload");
-                let cut_path = upload_files.path.slice(find_index_path);
-                format_form = {
-                    ...format_form, image: localhost + cut_path
+            let find_index_path = upload_files.path.indexOf("upload");
+            let cut_path = upload_files.path.slice(find_index_path);
+            let getExtension = cut_path.split(".")[1];
+
+            if (getExtension) {
+                if (extensionImage.includes(getExtension)) {
+                    format_form = {
+                        ...format_form, image: localhost + cut_path
+                    }
+                } else {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+                    })
                 }
             }
             songCateModel.findOneAndUpdate(condition, { $set: format_form }, { new: true })
