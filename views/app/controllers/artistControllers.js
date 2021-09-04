@@ -1,14 +1,15 @@
-const slides = require("../models/slides");
+const modelArtist = require("../models/artist");
 let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/methodCommon");
 let mongoess = require("mongoose");
 let path = require("path");
 
 let formidable = require("formidable")
 
-class slide {
-    index(req, res, next) {
+
+class artist {
+    async index(req, res, next) {
         let { _page, _limit, name, _id } = req.query;
-        slides.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
+        modelArtist.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, data) => {
                 if (err || !data) {
                     return res.json({
@@ -19,10 +20,11 @@ class slide {
                 } else {
                     if (name) {
                         let findName = data.filter(currenT => {
-                            let nameSlide = currenT.name.toLocaleLowerCase();
+                            let { first_Name, last_Name } = currenT
+                            let nameArtist = `${first_Name} ${last_Name}`.toLocaleLowerCase();
                             let ParamsName = name.toLocaleLowerCase();
 
-                            return nameSlide.indexOf(ParamsName) != -1;
+                            return nameArtist.indexOf(ParamsName) != -1;
                         })
                         return res.json({
                             status: statusS,
@@ -46,11 +48,11 @@ class slide {
             })
     }
     getOne(req, res) {
-        let { idSlide } = req.params;
+        let { idArtist } = req.params;
         let condition = {
-            _id: mongoess.Types.ObjectId(idSlide)
+            _id: mongoess.Types.ObjectId(idArtist)
         }
-        slides.findById(condition)
+        modelArtist.findById(condition)
             .exec((err, resp) => {
                 if (err || !resp) {
                     return res.json({
@@ -67,73 +69,55 @@ class slide {
                 }
             })
     }
-    createSlide(req, res) {
+
+    createArtist(req, res) {
         let form = formidable.IncomingForm();
         form.uploadDir = path.join(__dirname, "../../public/uploads");
         form.keepExtensions = true;
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
         form.parse(req, (err, fields, files) => {
-            if (fields.name && fields.content && files["image"] && fields.id_Songs) {
-                let condition = {
-                    name: fields.name
+
+            let { first_Name, last_Name, gender, birth } = fields
+
+            if (first_Name && last_Name && gender && birth && files["image"]) {
+                const upload_files = files["image"];
+
+                let find_index_path = upload_files.path.indexOf("upload");
+                let cut_path = upload_files.path.slice(find_index_path);
+
+                let getExtension = cut_path.split(".")[1];
+                if (!getExtension) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `We don't allow file is blank !`
+                    })
                 }
-                slides.find(condition).exec((err, response) => {
+                if (!extensionImage.includes(getExtension)) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `We just allow file extension jpg, jpeg, bmp,gif, png`
+                    })
+                }
+
+                let format_form = {
+                    ...fields,
+                    image: localhost + cut_path,
+                }
+                let createSlide = new modelArtist(format_form);
+                createSlide.save((err, product1) => {
                     if (err) {
-                        return res.json({
+                        res.json({
                             status: statusF,
-                            data: [],
-                            message: `We have some error:${err}`
-                        })
-                    }
-                    if (response.length >= 1) {
-                        return res.json({
-                            status: statusF,
-                            data: [],
-                            message: `this slide is already in the database !`
+                            message: `We have few error: ${err}`
                         })
                     } else {
-                        const upload_files = files["image"];
-
-                        let find_index_path = upload_files.path.indexOf("upload");
-                        let cut_path = upload_files.path.slice(find_index_path);
-
-                        let getExtension = cut_path.split(".")[1];
-                        if (!getExtension) {
-                            return res.json({
-                                status: statusF,
-                                data: [],
-                                message: `We don't allow file is blank !`
-                            })
-                        }
-                        if (!extensionImage.includes(getExtension)) {
-                            return res.json({
-                                status: statusF,
-                                data: [],
-                                message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
-                            })
-                        }
-
-                        let format_form = {
-                            name: fields.name,
-                            image: localhost + cut_path,
-                            content: fields.content,
-                            id_Songs: mongoess.Types.ObjectId(fields.id_Songs)
-                        }
-                        let createSlide = new slides(format_form);
-                        createSlide.save((err, product1) => {
-                            if (err) {
-                                res.json({
-                                    status: statusF,
-                                    message: `We have few error: ${err}`
-                                })
-                            } else {
-                                res.json({
-                                    status: statusS,
-                                    data: product1,
-                                    message: "Add Slide Successfully"
-                                })
-                            }
+                        res.json({
+                            status: statusS,
+                            data: product1,
+                            message: "Add Artist Successfully"
                         })
                     }
                 })
@@ -146,7 +130,7 @@ class slide {
             }
         })
     }
-    editSlide(req, res) {
+    editArtist(req, res) {
         let form = formidable.IncomingForm();
         form.uploadDir = path.join(__dirname, "../../public/uploads");
         form.keepExtensions = true;
@@ -155,15 +139,12 @@ class slide {
         form.parse(req, async (err, fields, files) => {
 
             const upload_files = files["image"];
-            let get_id = req.params.idSlide;
-
-
+            let get_id = req.params.idArtist;
             const condition = {
                 _id: mongoess.Types.ObjectId(get_id)
             }
             var format_form = {
-                ...fields,
-                id_Songs: mongoess.Types.ObjectId(fields.id_Songs)
+                ...fields
             }
 
             let find_index_path = upload_files.path.indexOf("upload");
@@ -183,7 +164,7 @@ class slide {
                     })
                 }
             }
-            slides.findOneAndUpdate(condition, { $set: format_form }, { new: true })
+            modelArtist.findOneAndUpdate(condition, { $set: format_form }, { new: true })
                 .exec((err, new_product) => {
                     if (err) {
                         res.json({
@@ -201,11 +182,11 @@ class slide {
                 })
         })
     }
-    deleteSlide(req, res) {
+    deleteArtist(req, res) {
         const condition = {
-            _id: mongoess.Types.ObjectId(req.params.idSlide)
+            _id: mongoess.Types.ObjectId(req.params.idArtist)
         }
-        slides.findOneAndRemove(condition)
+        modelArtist.findOneAndRemove(condition)
             .exec((err) => {
                 if (err) {
                     res.json({
@@ -222,4 +203,4 @@ class slide {
             })
     }
 }
-module.exports = new slide;
+module.exports = new artist;

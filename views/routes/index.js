@@ -5,8 +5,10 @@ const playlist = require("./playlist");
 const playlistSong = require("./playlistSong");
 const song = require("./song");
 const slide = require("./slides")
-
+const artist = require("./artist")
 function routes(app) {
+
+  app.use("/artist", artist);
   app.use("/playlist", playlist);
   app.use("/songCate", songCate);
   app.use("/topic", topic);
