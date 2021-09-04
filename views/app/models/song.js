@@ -17,6 +17,10 @@ const song = new Schema({
     describe: {
         type: String
     },
+    day_release: {
+        type: String
+    }
+    ,
     id_Topic: {
         type: Schema.ObjectId
     },
