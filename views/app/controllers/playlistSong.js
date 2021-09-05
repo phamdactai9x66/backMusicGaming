@@ -31,128 +31,126 @@ class playlistSong {
       }
     });
   }
-  getOne(req, res){
-    let {idPlaylistSong} = req.params;
+  getOne(req, res) {
+    let { idPlaylistSong } = req.params;
     let condition = {
       _id: mongoose.Types.ObjectId(idPlaylistSong)
     }
     modelPlaylistSong.findById(condition).exec((err, resp) => {
       if (err || !resp) {
         return res.json({
-            status: statusF,
-            data: [],
-            message: `We have some error:${resp}`
+          status: statusF,
+          data: [],
+          message: `We have some error:${resp}`
         })
       } else {
         return res.json({
-            status: statusS,
-            data: resp,
-            message: ``
+          status: statusS,
+          data: resp,
+          message: ``
         })
       }
     })
   }
   async createPlaylistSong(req, res) {
 
-    try {
-      let { id_Playlist: idPl, id_Songs: idS  } = req.body;
-      let findPlaylist = await modelPlaylist.find({ _id: mongoose.Types.ObjectId(idPl) })
-      let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) })
-
-      if (findPlaylist.length && findSong.length) {
-
-        let dataPlaylistSong = {
-          id_PlayList: mongoose.Types.ObjectId(idPl),
-          id_Songs: mongoose.Types.ObjectId(idS),
-        }
-
-        let createPlaylistSong = await new modelPlaylistSong(dataPlaylistSong)
-        createPlaylistSong.save((err, data) => {
-          if (err) {
-            res.json({
-                status: statusF,
-                message: `We have few error: ${err}`
-            })
-        } else {
-            res.json({
-                status: statusS,
-                data: data,
-                message: "Add Successfully"
-            })
-        }
-        });
-      
+    let { id_PlayList: idPl, id_Songs: idS } = req.body;
+    if (!idPl || !idS) {
+      return res.json({
+        status: statusF,
+        data: [],
+        message: `We don't allow field is blank !`
+      })
     }
-    } catch (error) {
+    let findPlaylist = await modelPlaylistSong.find({
+      id_PlayList: mongoose.Types.ObjectId(idPl),
+      id_Songs: mongoose.Types.ObjectId(idS)
+    })
+    if (!findPlaylist.length) {
+      let dataPlaylistSong = {
+        id_PlayList: mongoose.Types.ObjectId(idPl),
+        id_Songs: mongoose.Types.ObjectId(idS),
+      }
+
+      let createPlaylistSong = new modelPlaylistSong(dataPlaylistSong)
+      createPlaylistSong.save((err, data) => {
+        if (err) {
+          res.json({
+            status: statusF,
+            data: [],
+            message: `We have few error: ${err}`
+          })
+        } else {
+          res.json({
+            status: statusS,
+            data: data,
+            message: "Add Successfully"
+          })
+        }
+      });
+    } else {
       res.json({
         status: statusF,
-        data: [], 
-        error: error
-    })
+        data: [],
+        message: `this playlist-song was exist`
+      })
     }
   }
   async updatePlaylistSong(req, res) {
-    try {
-      let { id_Playlist: idPl, id_Songs: idS  } = req.body;
-      let findPlaylist = await modelPlaylist.find({ _id: mongoose.Types.ObjectId(idPl) })
-      let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) })
-
-      if (findPlaylist.length && findSong.length) {
-
-        let dataPlaylistSong = {
-          id_PlayList: mongoose.Types.ObjectId(idPl),
-          id_Songs: mongoose.Types.ObjectId(idS),
-        }
-
-        let idPlaylistSong = req.params.idPlaylistSong;
-        const condition = {
-            _id: mongoose.Types.ObjectId(idPlaylistSong)
-        }
-        
-        modelPlaylistSong.findOneAndUpdate(condition, { $set: dataPlaylistSong }, { new: true })
-          .exec((err, new_data) => {
-            if (err) {
-              res.json({
-                status: "failed",
-                message: `We have few error: ${err}`
-              })
-            } else {
-              res.json({
-                status: "successfully",
-                data: [new_data],
-                message: `You were update successfully`
-              })
-
-            }
-          })
-      }
-    } catch (error) {
-      res.json({
+    let { id_PlayList: idPl, id_Songs: idS } = req.body;
+    if (!idPl || !idS) {
+      return res.json({
         status: statusF,
-        data: [], 
-        error: error
-    })
+        data: [],
+        message: `We don't allow field is blank !`
+      })
     }
+    let dataPlaylistSong = {
+      id_PlayList: mongoose.Types.ObjectId(idPl),
+      id_Songs: mongoose.Types.ObjectId(idS),
+    }
+
+    let { idPlaylistSong } = req.params;
+    const condition = {
+      _id: mongoose.Types.ObjectId(idPlaylistSong)
+    }
+
+    modelPlaylistSong.findOneAndUpdate(condition, { $set: dataPlaylistSong }, { new: true })
+      .exec((err, new_data) => {
+        if (err) {
+          res.json({
+            status: "failed",
+            message: `We have few error: ${err}`
+          })
+        } else {
+          res.json({
+            status: "successfully",
+            data: [new_data],
+            message: `You were update successfully`
+          })
+
+        }
+      })
   }
   delete(req, res) {
     const condition = {
-        _id: mongoose.Types.ObjectId(req.params.idPlaylistSong)
+      _id: mongoose.Types.ObjectId(req.params.idPlaylistSong)
     }
     modelPlaylistSong.findOneAndRemove(condition)
-        .exec((err) => {
-            if (err) {
-                res.json({
-                    status: "failed",
-                    message: `We have few error: ${err}`
-                })
-            } else {
-                res.json({
-                    status: "successfully",
-                    data: {}
-                })
-            }
-        })
+      .exec((err) => {
+        if (err) {
+          res.json({
+            status: "failed",
+            message: `We have few error: ${err}`
+          })
+        } else {
+          res.json({
+            status: "successfully",
+            data: {}
+          })
+        }
+      })
 
-}
+  }
 }
 module.exports = new playlistSong();
