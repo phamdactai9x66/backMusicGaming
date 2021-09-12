@@ -7,6 +7,8 @@ const song = require("./song");
 const slide = require("./slides");
 const artist = require("./artist");
 const album = require('./album');
+const categoryBlog = require('./categoryBlog');
+const blog = require('./blog');
 
 function routes(app) {
 
@@ -17,7 +19,9 @@ function routes(app) {
   app.use("/playlistSong", playlistSong);
   app.use("/song", song);
   app.use('/slide', slide);
-  app.use('/albums', album)
+  app.use('/albums', album);
+  app.use('/categoryBlog', categoryBlog);
+  app.use('/blog', blog)
 
   app.use("/", side);
 }
