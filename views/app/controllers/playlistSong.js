@@ -1,7 +1,7 @@
 const modelPlaylistSong = require("../models/playlistSong");
 const modelPlaylist = require("../models/playlist");
 const song = require('../models/song');
-const { statusS, statusF } = require("../validator/methodCommon");
+const { statusS, statusF } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
 
 class playlistSong {

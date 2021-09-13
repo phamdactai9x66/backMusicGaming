@@ -8,7 +8,7 @@ const song = new Schema({
     title: {
         type: String, maxLength: 255, require: true, trim: true
     },
-    image: { type: String },
+    image: { type: String, default: "" },
     view: {
         type: Number, default: 0
     },

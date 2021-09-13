@@ -7,6 +7,7 @@ const song = require("./song");
 const slide = require("./slides");
 const artist = require("./artist");
 const album = require('./album');
+const user = require('./user');
 
 function routes(app) {
 
@@ -18,6 +19,7 @@ function routes(app) {
   app.use("/song", song);
   app.use('/slide', slide);
   app.use('/albums', album)
+  app.use('/user', user)
 
   app.use("/", side);
 }

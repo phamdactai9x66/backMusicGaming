@@ -1,6 +1,6 @@
 const topic = require("../models/topic");
 const mongoose = require("mongoose")
-let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/methodCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
 const formidable = require('formidable');
 const path = require('path')
 
