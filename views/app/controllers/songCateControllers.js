@@ -1,5 +1,5 @@
 const songCateModel = require("../models/songCate");
-let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/methodCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
 let mongoess = require("mongoose");
 let path = require("path");
 

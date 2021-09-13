@@ -3,7 +3,7 @@ const modelPlaylistSong = require("../models/playlistSong");
 const mongoose = require("mongoose");
 const formidable = require("formidable");
 const path = require("path");
-const { statusF, statusS, extensionImage, extensionAudio } = require("../validator/methodCommon");
+const { statusF, statusS, extensionImage, extensionAudio } = require("../validator/variableCommon");
 
 class playlist {
   async index(req, res, next) {
