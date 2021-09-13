@@ -1,12 +1,12 @@
 const slides = require("../models/slides");
-let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/methodCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
 let mongoess = require("mongoose");
 let path = require("path");
 
 let formidable = require("formidable")
 
 class slide {
-    async index(req, res, next) {
+    index(req, res, next) {
         let { _page, _limit, name, _id } = req.query;
         slides.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, data) => {
