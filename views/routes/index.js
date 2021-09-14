@@ -12,6 +12,8 @@ const album = require('./album');
 
 const categoryBlog = require('./categoryBlog');
 const blog = require('./blog');
+const comment = require("./comment")
+const detailBlog = require("./detailBlog")
 
 const user = require('./user');
 
@@ -29,6 +31,8 @@ function routes(app) {
   app.use('/categoryBlog', categoryBlog);
   app.use('/blog', blog)
   app.use('/albums', album)
+  app.use('/comment', comment);
+  app.use('/detailBlog', detailBlog);
   app.use('/user', user)
 
   app.use("/", side);
