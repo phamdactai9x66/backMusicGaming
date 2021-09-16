@@ -139,7 +139,7 @@ class user {
             })
         }
     }
-    signIn(req, res) {
+    login(req, res) {
         let { user } = res.locals
         if (user) {
             let getId_user = encode_jwt(user._id);

@@ -1,11 +1,11 @@
 const modelComment = require("../models/comment");
 const modelUser = require("../models/user");
 const modelBlog = require("../models/blog");
-let { statusF, statusS, localhost} = require("../validator/variableCommon");
+let { statusF, statusS, localhost } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
 
 class comment {
-    async index(req, res){
+    async index(req, res) {
         const { _limit, _page } = req.query;
         let condittion = {}
         let { id_Blog, _id } = req.query;
@@ -31,8 +31,8 @@ class comment {
             })
         }
     }
-    async create(req ,res){
-        try{
+    async create(req, res) {
+        try {
             let { id_Blog: idB, id_User: idU } = req.body;
             let findBlog = await modelBlog.find({ _id: mongoose.Types.ObjectId(idB) })
             let findUser = await modelUser.find({ _id: mongoose.Types.ObjectId(idU) })
@@ -50,21 +50,21 @@ class comment {
                 let createComment = new modelComment(dataComment)
                 createComment.save((err, data) => {
                     if (err) {
-                      res.json({
-                        status: statusF,
-                        data: [],
-                        message: `We have few error: ${err}`
-                      })
+                        res.json({
+                            status: statusF,
+                            data: [],
+                            message: `We have few error: ${err}`
+                        })
                     } else {
-                      res.json({
-                        status: statusS,
-                        data: data,
-                        message: "Add Successfully"
-                      })
+                        res.json({
+                            status: statusS,
+                            data: data,
+                            message: "Add Successfully"
+                        })
                     }
-                  })
+                })
             }
-        }catch (error){
+        } catch (error) {
             res.json({
                 status: statusF,
                 data: [],
@@ -72,18 +72,15 @@ class comment {
             })
         }
     }
-    async edit(req, res){
-        try{
+    async edit(req, res) {
+        try {
             let { id_Blog: idB, id_User: idU } = req.body;
             let findBlog = await modelBlog.find({ _id: mongoose.Types.ObjectId(idB) })
             let findUser = await modelUser.find({ _id: mongoose.Types.ObjectId(idU) })
 
             if (findBlog.length && findUser.length) {
                 let dataComment = {
-                    title: req.body.title,
-                    rangeStart: req.body.rangeStart,
-                    comment: req.body.comment,
-                    state: req.body.state,
+                    ...req.body,
                     id_User: mongoose.Types.ObjectId(idU),
                     id_Blog: mongoose.Types.ObjectId(idB),
                 }
@@ -110,7 +107,7 @@ class comment {
                         }
                     })
             }
-        }catch (error){
+        } catch (error) {
             res.json({
                 status: statusF,
                 data: [],
@@ -118,7 +115,7 @@ class comment {
             })
         }
     }
-    delete(req, res){
+    delete(req, res) {
         const condition = {
             _id: mongoose.Types.ObjectId(req.params.idComment)
         }

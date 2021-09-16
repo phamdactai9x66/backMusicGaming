@@ -10,7 +10,7 @@ router.post("/login/facebook", signFacebook, user_Controller.loginGlobal)
 
 router.post("/signUp", checkConfirmPass, user_Controller.signUp);
 
-router.post("/signIn", getFormInput(), check_hash, user_Controller.signIn)
+router.post("/login", getFormInput(), check_hash, user_Controller.login)
 
 router.delete("/:idUser/delete", user_Controller.deleteOne)
 

@@ -112,7 +112,7 @@ const decode_jwt = (token) => {
     return jwt.verify(token, JWT_SECRET)
 }
 const signGoogle = async (req, res, next) => {
-    if (!Object.entries(req.body).length) {
+    if (!req || !Object.entries(req.body).length) {
         return res.json({
             status: statusF,
             message: "body null"
@@ -145,7 +145,7 @@ const signGoogle = async (req, res, next) => {
             if (err) {
                 return res.json({
                     status: statusF,
-                    message: "this email been exist,blease select another email."
+                    message: "Email of this account been exist,blease select another account."
                 })
             }
             res.locals.payLoad = await new_user1;
@@ -188,7 +188,7 @@ const signFacebook = async (req, res, next) => {
             if (err) {
                 return res.json({
                     status: statusF,
-                    message: "account been exist,blease select another account."
+                    message: "Email of this account been exist,blease select another account."
                 })
             }
             res.locals.payLoad = await new_user1;
