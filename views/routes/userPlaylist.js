@@ -1,19 +1,16 @@
 var express = require('express')
 
 var router = express.Router();
+const userPlaylistController = require('../app/controllers/userPlaylistController');
 
-router.get('/', (req, res) => {
-    res.json({
-        message: "this is test get userPlaylist"
-    })
-});
-// router.get('/:idAlbum', .getOne);
+router.get('/', userPlaylistController.index);
+router.get('/:idUserPlaylist', userPlaylistController.getOne);
 
-// router.post('/add', .createAlbum);
+router.post('/add', userPlaylistController.createUserPlaylist);
 
-// router.delete('/:idAlbum/delete', .deleteAlbum);
+router.delete('/:idUserPlaylist/delete', userPlaylistController.deleteUserPlaylist);
 
-// router.put('/:idAlbum/update', .editAlbum)
+router.put('/:idUserPlaylist/update', userPlaylistController.editUserPlaylist)
 
 
 module.exports = router;

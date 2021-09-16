@@ -14,6 +14,8 @@ const categoryBlog = require('./categoryBlog');
 const blog = require('./blog');
 
 const user = require('./user');
+const userPlaylist = require('./userPlaylist');
+const songPlaylist = require('./songPlaylist')
 
 
 function routes(app) {
@@ -30,7 +32,8 @@ function routes(app) {
   app.use('/blog', blog);
   app.use('/albums', album);
   app.use('/user', user);
-  
+  app.use('/userPlaylist', userPlaylist);
+  app.use('/songPlaylist', songPlaylist)
 
   app.use("/", side);
 }
