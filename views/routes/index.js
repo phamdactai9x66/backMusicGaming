@@ -21,7 +21,8 @@ function routes(app) {
   app.use('/slide', slide);
   app.use('/albums', album);
   app.use('/categoryBlog', categoryBlog);
-  app.use('/blog', blog)
+  app.use('/blog', blog);
+  
 
   app.use("/", side);
 }
