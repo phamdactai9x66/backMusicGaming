@@ -4,7 +4,7 @@ let {
   statusS,
   localhost,
   extensionImage,
-} = require("../validator/methodCommon");
+} = require("../validator/variableCommon");
 let mongoose = require("mongoose");
 const formidable = require("formidable");
 let path = require("path");

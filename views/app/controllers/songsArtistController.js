@@ -1,7 +1,7 @@
 const songsArtistModel = require('../models/songsArtist');
-// const artistModel = require('../models/artist'); //co model artist thi update sau
+const artistModel = require('../models/artist'); 
 const song = require('../models/song');
-const { statusS, statusF } = require("../validator/methodCommon");
+const { statusS, statusF } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
 
 class songsArtist {
