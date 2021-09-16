@@ -230,5 +230,20 @@ class user {
             }
         })
     }
+    loginGlobal(req, res) {
+        if (res.locals.payLoad._id) {
+            res.json({
+                status: statusS,
+                user: res.locals.payLoad,
+                token: encode_jwt(res.locals.payLoad._id)
+            })
+        } else {
+            res.json({
+                status: statusF,
+                user: "",
+                token: ""
+            })
+        }
+    }
 }
 module.exports = new user;
