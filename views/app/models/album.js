@@ -9,7 +9,7 @@ const album = new Schema({//chung ta dang mo ta cai luc do(schema) trong colecti
         type: String, maxLength: 255, require: true, trim: true
     },
     image: {
-        type: String
+        type: String, default: ""
     },
     id_Artist: {
         type: Schema.ObjectId,

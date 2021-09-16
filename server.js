@@ -6,6 +6,7 @@ const cors = require("cors")
 const morgan = require("morgan");
 var methodOverride = require('method-override')
 let express_layouts = require("express-ejs-layouts");
+require("dotenv").config()
 
 
 const db_NoSQL = require("./views/config/db");

@@ -9,16 +9,23 @@ const mongooseSlugGenerator = require("mongoose-slug-generator");
 
 class categoryBlog {
     async index(req, res, next) {
-        let { _page, _limit, name, id } = req.query;
-        await modelCategoryBlog.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
-            .exec( (err, data) => {
-                if(err || !data){
+        let { _page, _limit, name, _id } = req.query;
+        let condition = {};
+        if (_id) {
+            condition = {
+                ...condition,
+                _id: mongoess.Types.ObjectId(_id),
+            };
+        }
+        await modelCategoryBlog.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({})
+            .exec((err, data) => {
+                if (err || !data) {
                     return res.json({
                         status: statusF,
                         data: [],
                         message: "Get category blog failed. Error: " + err
                     })
-                }else{
+                } else {
                     return res.json({
                         status: statusS,
                         data: data,
@@ -32,7 +39,7 @@ class categoryBlog {
         let form = formidable.IncomingForm();
         form.keepExtensions = true;
         form.parse(req, (err, fields, files) => {
-            if(err){
+            if (err) {
                 return res.json({
                     status: statusF,
                     data: [],
@@ -72,7 +79,7 @@ class categoryBlog {
         let form = formidable.IncomingForm();
         form.multiples = true;
         form.parse(req, async (err, fields, files) => {
-            if(err || !fields){
+            if (err || !fields) {
                 return res.json({
                     status: statusF,
                     data: [],
@@ -80,7 +87,7 @@ class categoryBlog {
                 })
             }
             //trong trường hợp cố ý xóa hết các field nhập thì cần phải check lại xem ní có rỗng không
-            if(!fields.name){
+            if (!fields.name) {
                 return res.json({
                     status: statusF,
                     data: [],
@@ -129,8 +136,8 @@ class categoryBlog {
                     const attr = {
                         id_CategoryBlog: mongoess.Types.ObjectId(req.params.idCategoryBlog)
                     }
-                    modelBlog.find(attr).remove( (err, blogDeleted) => {
-                        if(err){
+                    modelBlog.find(attr).remove((err, blogDeleted) => {
+                        if (err) {
                             return res.json({
                                 status: statusF,
                                 message: `We have few error: ${err}`

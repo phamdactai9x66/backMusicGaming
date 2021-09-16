@@ -1,5 +1,5 @@
 const modelAlbum = require("../models/album");
-let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/methodCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
 let mongoess = require("mongoose");
 let path = require("path");
 
@@ -7,31 +7,16 @@ let formidable = require("formidable")
 
 
 class album {
-    async index(req, res, next) {
-        let { _page, _limit, _id, _idArtist, _title } = req.query;
+    index(req, res, next) {
+        let { _page, _limit, _id, id_Artist, title } = req.query;
 
         var condition = {};
-        if(_idArtist){
-            condition = {
-                ...condition,
-                id_Artist: mongoess.Types.ObjectId(_idArtist)
-            }
-        }
-
-        if(_title){
-            condition = {
-                ...condition,
-                title: _title
-            }
-        }
-
-        if(_id){
+        if (_id) {
             condition = {
                 ...condition,
                 _id: mongoess.Types.ObjectId(_id)
             }
         }
-
         modelAlbum.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, data) => {
                 if (err || !data) {
@@ -40,13 +25,30 @@ class album {
                         data: [],
                         message: `we have some error:${err}`
                     })
-                }else if(data.length === 0){
-                    return res.json({
-                        status: statusF,
-                        data: data,
-                        message: "album is not define."
-                    })
                 } else {
+                    if (title) {
+                        let findTitle = data.filter(currenT => {
+                            let { title: currentTitle } = currenT;
+                            let TitleArtist = currentTitle.toLocaleLowerCase();
+                            let ParamsTitle = title.toLocaleLowerCase();
+
+                            return TitleArtist.indexOf(ParamsTitle) != -1;
+                        })
+                        return res.json({
+                            status: statusS,
+                            data: findTitle,
+                            message: "get data successfully"
+                        })
+                    }
+                    else if (id_Artist) {
+
+                        const find_idArtist = data.reduce((previousV, currenV) => ({ ...previousV, [currenV.id_Artist]: currenV }), [])
+                        return res.json({
+                            status: statusS,
+                            data: find_idArtist[id_Artist] ? [find_idArtist[id_Artist]] : {},
+                            message: "get data successfully"
+                        })
+                    }
                     return res.json({
                         status: statusS,
                         data: data,
@@ -77,29 +79,6 @@ class album {
                 }
             })
     }
-    // getAlbumByArtist(req, res){
-    //     let { idArtist } = req.params;
-    //     let condition = {
-    //         id_Artist: mongoess.Types.ObjectId(idArtist)
-    //     }
-    //     modelAlbum.findOne(condition)
-    //         .exec((err, album) => {
-    //             if (err || !album) {
-    //                 return res.json({
-    //                     status: statusF,
-    //                     data: [],
-    //                     message: `We have some error:${err}`
-    //                 })
-    //             } else {
-    //                 return res.json({
-    //                     status: statusS,
-    //                     data: album,
-    //                     message: `get album by id artist successfully.`
-    //                 })
-    //             }
-    //         })
-    // }
-
     createAlbum(req, res) {
         let form = formidable.IncomingForm();
         form.uploadDir = path.join(__dirname, "../../public/uploads");
@@ -107,7 +86,7 @@ class album {
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
         form.parse(req, (err, fields, files) => {
-            if(err){
+            if (err) {
                 return res.json({
                     status: statusF,
                     data: [],
@@ -175,7 +154,7 @@ class album {
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
         form.parse(req, async (err, fields, files) => {
-            if(err || !fields){
+            if (err || !fields) {
                 return res.json({
                     status: statusF,
                     data: [],
@@ -183,8 +162,8 @@ class album {
                 })
             }
             //trong trường hợp cố ý xóa hết các field nhập thì cần phải check lại xem ní có rỗng không
-            const {title, id_Artist} = fields;
-            if(!title || !id_Artist){
+            const { title, id_Artist } = fields;
+            if (!title || !id_Artist) {
                 return res.json({
                     status: statusF,
                     data: [],

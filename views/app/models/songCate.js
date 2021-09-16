@@ -8,7 +8,7 @@ const category = new Schema({//chung ta dang mo ta cai luc do(schema) trong cole
     name: {
         type: String, maxLength: 255, require: true, trim: true
     },
-    image: { type: String },
+    image: { type: String, default: "" },
     id_Topic: {
         type: Schema.ObjectId
     }
