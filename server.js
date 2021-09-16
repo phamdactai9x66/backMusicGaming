@@ -19,7 +19,7 @@ const port = 5000
 const server = require("http").createServer(app);
 // const io = require("socket.io")(server, { cors: { origin: "*" } })
 // let chat = require("./views/app/models/chat");
-// app.use(cors())
+app.use(cors())
 
 // async function handlePromise(params) {
 //   try {
