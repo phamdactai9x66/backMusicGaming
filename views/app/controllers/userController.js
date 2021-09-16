@@ -230,9 +230,8 @@ class user {
             }
         })
     }
-    loginGoogle(req, res) {
+    loginGlobal(req, res) {
         if (res.locals.payLoad._id) {
-
             res.json({
                 status: statusS,
                 user: res.locals.payLoad,

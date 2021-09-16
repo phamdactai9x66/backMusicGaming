@@ -1,6 +1,6 @@
 const formidable = require("formidable");
 const path = require("path");
-const { statusF } = require("./variableCommon");
+const { statusF, statusS } = require("./variableCommon");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const moduleUser = require("../models/user");
@@ -112,16 +112,13 @@ const decode_jwt = (token) => {
     return jwt.verify(token, JWT_SECRET)
 }
 const signGoogle = async (req, res, next) => {
-    console.log(req.body.profileObj);
     if (!Object.entries(req.body).length) {
         return res.json({
             status: statusF,
             message: "body null"
         })
     }
-
     let { googleId, email, givenName, familyName, imageUrl } = req.body.profileObj
-
     const condition = {
         authType: "google",
         email,
@@ -130,9 +127,7 @@ const signGoogle = async (req, res, next) => {
     const user1 = await modelUser.findOne(condition)
     if (user1) {
         res.locals.payLoad = user1;
-        console.log("we have  this account in db");
-        next()
-        return;
+        return next()
     } else {
         const params = {
             google_id: googleId,
@@ -145,11 +140,61 @@ const signGoogle = async (req, res, next) => {
             address: "",
             active: true
         }
-        const new_user = new modelUser(params).save()
-        res.locals.payLoad = await new_user;
-        next()
+        const new_user = new modelUser(params);
+        new_user.save(async (err, new_user1) => {
+            if (err) {
+                return res.json({
+                    status: statusF,
+                    message: "this email been exist,blease select another email."
+                })
+            }
+            res.locals.payLoad = await new_user1;
+            return next()
+        });
     }
+}
+const signFacebook = async (req, res, next) => {
+    if (!Object.entries(req.body).length) {
+        return res.json({
+            status: statusF,
+            message: "body null"
+        })
+    }
+    let { name, email, picture: { data: { url }, id } } = req.body;
+    const condition = {
+        authType: "facebook",
+        email,
+        facebook_id: id
+    }
+    const user1 = await modelUser.findOne(condition)
+    if (user1) {
+        res.locals.payLoad = user1;
+        return next()
 
+    } else {
+        const params = {
+            facebook_id: id,
+            authType: "facebook",
+            email: email,
+            first_name: name,
+            last_name: "",
+            userName: email,
+            avatar: url,
+            address: "",
+            active: true
+        }
+        const new_user = new modelUser(params);
+        new_user.save(async (err, new_user1) => {
+            if (err) {
+                return res.json({
+                    status: statusF,
+                    message: "account been exist,blease select another account."
+                })
+            }
+            res.locals.payLoad = await new_user1;
+            return next()
+        });
+    }
 }
 module.exports = {
     checkConfirmPass,
@@ -157,5 +202,6 @@ module.exports = {
     check_hash,
     encode_jwt,
     decode_jwt,
-    signGoogle
+    signGoogle,
+    signFacebook
 }
