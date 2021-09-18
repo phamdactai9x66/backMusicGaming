@@ -1,6 +1,6 @@
 const modelCategoryBlog = require("../models/categoryBlog");
 const modelBlog = require("../models/blog");
-let { statusF, statusS } = require("../validator/methodCommon");
+let { statusF, statusS } = require("../validator/variableCommon");
 let mongoess = require("mongoose");
 
 let formidable = require("formidable");
