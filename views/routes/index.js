@@ -4,6 +4,7 @@ const songCate = require("./songCate");
 const playlist = require("./playlist");
 const playlistSong = require("./playlistSong");
 const song = require("./song");
+const likeSong = require("./likeSong")
 
 const songsArtist = require("./songsArtist")
 const slide = require("./slides");
@@ -38,6 +39,7 @@ function routes(app) {
   app.use('/user', user)
   app.use('/userPlaylist', userPlaylist);
   app.use('/songPlaylist', songPlaylist)
+  app.use('/likeSong', likeSong)
 
   app.use("/", side);
 }
