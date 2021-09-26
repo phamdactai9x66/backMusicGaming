@@ -1,7 +1,7 @@
 var express = require('express')
 
 var router = express.Router()
-const { checkConfirmPass, getFormInput, check_hash, signGoogle, signFacebook } = require("../app/validator/methodCommon");
+const { checkConfirmPass, getFormInput, check_hash, signGoogle, signFacebook, checkLogin, checkAuthe } = require("../app/validator/methodCommon");
 const user_Controller = require("../app/controllers/userController");
 
 router.post("/login/google", signGoogle, user_Controller.loginGlobal)
@@ -14,7 +14,7 @@ router.post("/login", getFormInput(), check_hash, user_Controller.login)
 
 router.delete("/:idUser/delete", user_Controller.deleteOne)
 
-router.put("/:idUser/update", user_Controller.editUser)
+router.put("/:idUser/update/:tokenUser", checkLogin, checkAuthe(2), user_Controller.editUser)
 
 router.get("/:idUser", user_Controller.getOne);
 

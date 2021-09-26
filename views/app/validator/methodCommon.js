@@ -1,11 +1,10 @@
 const formidable = require("formidable");
 const path = require("path");
-const { statusF, statusS } = require("./variableCommon");
+const { statusF } = require("./variableCommon");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const moduleUser = require("../models/user");
 const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(process.env.client_id_google)
 const modelUser = require("../models/user");
 const getFormInput = () => {
     let form1 = new formidable.IncomingForm();
@@ -109,7 +108,7 @@ const encode_jwt = (idUser) => {
     }, process.env.JWT_SECRET)
 }
 const decode_jwt = (token) => {
-    return jwt.verify(token, JWT_SECRET)
+    return jwt.verify(token, process.env.JWT_SECRET)
 }
 const signGoogle = async (req, res, next) => {
     if (!req || !Object.entries(req.body).length) {
@@ -196,6 +195,51 @@ const signFacebook = async (req, res, next) => {
         });
     }
 }
+const checkLogin = async (req, res, next) => {
+
+    try {
+        let get_token = req.params.tokenUser;
+
+        let cecode_token = decode_jwt(get_token, process.env.JWT_SECRET);
+        const find_user = await modelUser.findOne({ _id: cecode_token.sub })
+        if (find_user) {
+            res.locals.users = find_user;
+            next()
+        } else {
+            // res.status(401).json("We can't found your account!");
+            res.json({
+                status: statusF,
+                message: "We can't found your account!",
+                data: []
+            })
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({
+            status: statusF,
+            message: "The process authentication been failed."
+        })
+
+    }
+}
+const checkAuthe = (input_role = 0) => {
+    return (req, res, next) => {
+        let role = res.locals.users;
+        if (role && role.role >= input_role) {
+
+            next();
+        } else {
+            res.json({
+                status: statusF,
+                data: [],
+                message: `We don't permission you do that, because your role have to ${input_role}!`
+            })
+        }
+
+
+    }
+}
 module.exports = {
     checkConfirmPass,
     getFormInput,
@@ -203,5 +247,7 @@ module.exports = {
     encode_jwt,
     decode_jwt,
     signGoogle,
-    signFacebook
+    signFacebook,
+    checkLogin,
+    checkAuthe
 }

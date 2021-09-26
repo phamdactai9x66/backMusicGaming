@@ -2,7 +2,7 @@ const modelUser = require("../models/user");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const path = require("path");
-const { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
+const { statusF, statusS, localhost, extensionImage } = require("../validator/variableCommon");
 const { encode_jwt, decode_jwt } = require("../validator/methodCommon");
 let formidable = require("formidable")
 class user {
@@ -115,7 +115,6 @@ class user {
             let create_user = new modelUser({ ...req.body })
 
             create_user.save((err, user_Data) => {
-                console.log(user_Data);
                 if (err) {
                     res.json({
                         status: statusF,
@@ -177,9 +176,9 @@ class user {
         form.multiples = true;
 
         form.parse(req, (err, fields, files) => {
-            let { first_name, last_name, email, userName, passWord } = fields;
+            let { first_name, last_name, email } = fields;
 
-            if (first_name && last_name && email && userName && passWord) {
+            if (first_name && last_name && email) {
                 let get_id = req.params.idUser;
                 const condition = {
                     _id: mongoose.Types.ObjectId(get_id)
