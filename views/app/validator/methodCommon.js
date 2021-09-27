@@ -14,7 +14,7 @@ const getFormInput = () => {
             if (err) {
                 return res.json({
                     status: statusF,
-                    message: err
+                    message: "Wrong request !"
                 })
             } else {
 
@@ -111,7 +111,7 @@ const decode_jwt = (token) => {
     return jwt.verify(token, process.env.JWT_SECRET)
 }
 const signGoogle = async (req, res, next) => {
-    if (!req || !Object.entries(req.body).length) {
+    if (!req || !Object.entries(req?.body).length) {
         return res.json({
             status: statusF,
             message: "body null"
@@ -153,7 +153,7 @@ const signGoogle = async (req, res, next) => {
     }
 }
 const signFacebook = async (req, res, next) => {
-    if (!Object.entries(req.body).length) {
+    if (!Object.entries(req?.body).length) {
         return res.json({
             status: statusF,
             message: "body null"

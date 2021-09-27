@@ -142,11 +142,13 @@ class user {
         let { user } = res.locals
         if (user) {
             let getId_user = encode_jwt(user._id);
-            res.json({
-                status: statusS,
-                token: getId_user,
-                user: user
-            })
+            setTimeout(() => {
+                res.json({
+                    status: statusS,
+                    token: getId_user,
+                    user: user
+                })
+            }, 1000);
         }
     }
     deleteOne(req, res) {
