@@ -159,7 +159,7 @@ const signFacebook = async (req, res, next) => {
             message: "body null"
         })
     }
-    let { name, email, picture: { data: { url }, id } } = req.body;
+    let { name, email, picture: { data: { url } }, id } = req.body;
     const condition = {
         authType: "facebook",
         email,
