@@ -99,6 +99,7 @@ class album {
             if (title && id_Artist && files["image"]) {
                 const upload_files = files["image"];
 
+
                 let find_index_path = upload_files.path.indexOf("upload");
                 let cut_path = upload_files.path.slice(find_index_path);
 

@@ -90,26 +90,28 @@ class user {
         let form1 = res.locals.image_user;
         let { first_name, last_name, email, userName, passWord, confirmPassWord } = req.body;
 
-        if (first_name && last_name && email && userName && passWord && confirmPassWord
-            && form1) {
+        if (first_name && last_name && email && userName && passWord && confirmPassWord) {
             let find_index_path = form1.path.indexOf("imageUser");
             let cut_path = form1.path.slice(find_index_path);
 
             let getExtension = cut_path.split(".")[1];
-            if (!getExtension) {
-                return res.json({
-                    status: statusF,
-                    data: [],
-                    message: `We don't allow file is blank !`
-                })
+            // if (!getExtension) {
+            //     return res.json({
+            //         status: statusF,
+            //         data: [],
+            //         message: `We don't allow file is blank !`
+            //     })
+            // }
+            if (getExtension) {
+                if (!extensionImage.includes(getExtension.toLowerCase())) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+                    })
+                }
             }
-            if (!extensionImage.includes(getExtension)) {
-                return res.json({
-                    status: statusF,
-                    data: [],
-                    message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
-                })
-            }
+
             req.body.avatar = `${localhost}/${cut_path}`;
             delete req.body.confirmPassWord;
             let create_user = new modelUser({ ...req.body })
