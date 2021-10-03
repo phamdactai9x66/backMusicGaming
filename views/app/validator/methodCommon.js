@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const moduleUser = require("../models/user");
 const { OAuth2Client } = require("google-auth-library");
 const modelUser = require("../models/user");
+const CryptoJs = require("crypto-js");
 const getFormInput = () => {
     let form1 = new formidable.IncomingForm();
     return (req, res, next) => {
@@ -70,6 +71,10 @@ const check_hash = async (req, res, next) => {
 
 
         let { userName, passWord } = req.body;
+        const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
+
+        passWord = CryptoJs.AES.decrypt(passWord, SECRET_KEY).toString(CryptoJs.enc.Utf8);
+
         const condition = {
             userName: userName.trim()
         }
