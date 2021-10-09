@@ -35,7 +35,7 @@ class detailBlog {
     getOne(req, res){
         let { idDetailBlog } = req.params;
         let condition = {
-            _id: mongoess.Types.ObjectId(idDetailBlog)
+            _id: mongoose.Types.ObjectId(idDetailBlog)
         }
         modelDetailBlog.findById(condition)
             .exec((err, resp) => {
