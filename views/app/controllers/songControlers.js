@@ -2,6 +2,7 @@ const SongModel = require("../models/song");
 let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
 let path = require("path");
+const modelArtist = require("../models/artist");
 
 let formidable = require("formidable")
 
@@ -9,45 +10,89 @@ let formidable = require("formidable")
 
 class song {
     index(req, res, next) {
-        let { _page, _limit, name, _id } = req.query;
-        SongModel.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
-            .exec((err, response) => {
-                if (err || !response) {
-                    return res.json({
-                        status: statusF,
-                        data: [],
-                        message: `we have some error:${err}`
+        let { _page, _limit, name, _id, id_artist, view, date, day_release, active, id_Topic, id_Categories, id_album } = req.query;
+
+        let sort_by = {};
+        if(view){ 
+            if(view === "asc" || view === "desc"){
+                sort_by = {...sort_by, view: view === "asc" ? 1 : -1};
+            }else{
+                return res.status(400).json({
+                    status: statusF,
+                    data:[],
+                    message: "You need input with 'asc' or 'desc'."
+                })
+            } 
+        }
+        if(date) { 
+            if(date === "asc" || date === "desc"){
+                sort_by = {...sort_by, createdAt: date === "asc" ? 1 : -1}; 
+            }else{
+                return res.status(400).json({
+                    status: statusF,
+                    data:[],
+                    message: "You need input with 'asc' or 'desc'."
+                })
+            }
+        }
+        if(day_release) { 
+            if(day_release === "asc" || day_release === "desc"){
+                sort_by = {...sort_by, day_release: day_release === "asc" ? 1 : -1};
+            }else{
+                return res.status(400).json({
+                    status: statusF,
+                    data:[],
+                    message: "You need input with 'asc' or 'desc'."
+                })
+            }
+        }
+        
+        let condition = {};
+        if(id_artist) condition = {...condition, id_artist: id_artist};
+        if(active) condition = {...condition, active: active};
+        if(id_Topic) condition = {...condition, id_Topic: id_Topic};
+        if(id_Categories) condition = {...condition, id_Categories: id_Categories};
+        if(id_album) condition = {...condition, id_album: id_album};
+
+        SongModel.find(condition).sort(sort_by).limit(_limit * 1).skip((_page - 1) * _limit).select({})
+        .exec((err, response) => {
+            if (err || !response) {
+                return res.json({
+                    status: statusF,
+                    data: [],
+                    message: `we have some error:${err}`
+                })
+            } else {
+                if (name) {
+                    let findName = response.filter(currenT => {
+
+                        let nameTopic = currenT.title.toLowerCase();
+                        let ParamsName = name.toLowerCase();
+
+                        return nameTopic.indexOf(ParamsName) != -1;
                     })
-                } else {
-                    if (name) {
-                        let findName = response.filter(currenT => {
-
-                            let nameTopic = currenT.title.toLowerCase();
-                            let ParamsName = name.toLowerCase();
-
-                            return nameTopic.indexOf(ParamsName) != -1;
-                        })
-                        return res.json({
-                            status: statusS,
-                            data: findName,
-                            message: "get data successfully"
-                        })
-                    } else if (_id) {
-                        let findId = response.find(currenT => currenT._id == _id);
-                        return res.json({
-                            status: statusS,
-                            data: findId,
-                            message: "get data successfully"
-                        })
-                    }
                     return res.json({
                         status: statusS,
-                        data: response,
-                        message: ``
+                        data: findName,
+                        message: "get data successfully"
+                    })
+                } else if (_id) {
+                    let findId = response.find(currenT => currenT._id == _id);
+                    return res.json({
+                        status: statusS,
+                        data: findId,
+                        message: "get data successfully"
                     })
                 }
+                return res.json({
+                    status: statusS,
+                    data: response,
+                    message: ``
+                })
+            }
 
-            })
+        })
+        
     }
     createSong(req, res) {
         let form1 = formidable.IncomingForm();
@@ -56,10 +101,10 @@ class song {
         form1.maxFieldsSize = 1 * 1024 * 1024;
         form1.multiples = true;
         form1.parse(req, (err, all_input, files) => {
-            let { title, view, active, describe, id_Topic, id_Categories, id_album, day_release } = all_input;
+            let { title, view, active, describe, id_Topic, id_Categories, id_album, day_release, id_artist } = all_input;
 
             if (title && view != undefined && files["image"] && files["audio"] && active
-                && describe && id_Topic && id_Categories && id_album && day_release
+                && describe && id_Topic && id_Categories && id_album && day_release && id_artist
             ) {
                 let condition = {
                     title
@@ -80,66 +125,80 @@ class song {
                             message: `this song was have in database !`
                         })
                     } else {
-                        const upload_files = files["image"];
-
-                        let find_index_path = upload_files.path.indexOf("upload");
-                        let cut_path = upload_files.path.slice(find_index_path);
-                        //["/awdawd","png"]
-
-                        const upload_audio = files["audio"];
-
-                        let find_index_path_audio = upload_audio.path.indexOf("upload");
-                        let cut_path_audio = upload_audio.path.slice(find_index_path_audio);
-
-                        let getExtension = cut_path.split(".")[1];
-                        let getExtension_audio = cut_path_audio.split(".")[1];
-                        if (!getExtension || !getExtension_audio) {
-                            return res.json({
-                                status: statusF,
-                                data: [],
-                                message: `We don't allow file is blank !`
-                            })
+                        let conditionArtist = {
+                            _id: mongoose.Types.ObjectId(id_artist)
                         }
-                        if (!extensionAudio.includes(getExtension_audio)) {
-                            return res.json({
-                                status: statusF,
-                                data: [],
-                                message: `We just allow file extension mp3,wav,flac,aac,m4a`
-                            })
-                        }
-                        if (!extensionImage.includes(getExtension)) {
-                            return res.json({
-                                status: statusF,
-                                data: [],
-                                message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
-                            })
-                        }
+                        modelArtist.findById(conditionArtist)
+                            .exec((err, resp) => {
+                                if (err || !resp) {
+                                    return res.json({
+                                        status: statusF,
+                                        data: [],
+                                        message: `We have some error:${resp}`
+                                    })
+                                }
+                                const upload_files = files["image"];
 
-                        let format_form = {
-                            ...all_input,
-                            image: localhost + cut_path,
-                            audio: localhost + cut_path_audio,
-                            id_Topic: mongoose.Types.ObjectId(id_Topic),
-                            id_Categories: mongoose.Types.ObjectId(id_Categories),
-                            id_album: mongoose.Types.ObjectId(id_album)
-                        }
-                        let create_Song = new SongModel(format_form);
-                        create_Song.save((err, product1) => {
-                            if (err) {
-                                res.json({
-                                    status: statusF,
-                                    data: [],
-                                    message: `We have few error: ${err}`
+                                let find_index_path = upload_files.path.indexOf("upload");
+                                let cut_path = upload_files.path.slice(find_index_path);
+                                //["/awdawd","png"]
+
+                                const upload_audio = files["audio"];
+
+                                let find_index_path_audio = upload_audio.path.indexOf("upload");
+                                let cut_path_audio = upload_audio.path.slice(find_index_path_audio);
+
+                                let getExtension = cut_path.split(".")[1]?.toLowerCase();
+                                let getExtension_audio = cut_path_audio.split(".")[1]?.toLowerCase();
+                                if (!getExtension || !getExtension_audio) {
+                                    return res.json({
+                                        status: statusF,
+                                        data: [],
+                                        message: `We don't allow file is blank !`
+                                    })
+                                }
+                                if (!extensionAudio.includes(getExtension_audio)) {
+                                    return res.json({
+                                        status: statusF,
+                                        data: [],
+                                        message: `We just allow file extension mp3,wav,flac,aac,m4a`
+                                    })
+                                }
+                                if (!extensionImage.includes(getExtension)) {
+                                    return res.json({
+                                        status: statusF,
+                                        data: [],
+                                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+                                    })
+                                }
+                                let format_form = {
+                                    ...all_input,
+                                    image: localhost + cut_path,
+                                    audio: localhost + cut_path_audio,
+                                    id_Topic: mongoose.Types.ObjectId(id_Topic),
+                                    id_Categories: mongoose.Types.ObjectId(id_Categories),
+                                    id_album: mongoose.Types.ObjectId(id_album),
+                                    id_artist: mongoose.Types.ObjectId(id_artist),
+                                    name_artist: resp.first_name + resp.last_name
+                                }
+                                let create_Song = new SongModel(format_form);
+                                create_Song.save((err, product1) => {
+                                    if (err) {
+                                        res.json({
+                                            status: statusF,
+                                            data: [],
+                                            message: `We have few error: ${err}`
+                                        })
+                                    } else {
+                                        res.json({
+                                            status: statusS,
+                                            data: product1,
+                                            message: "Add Product Successfully"
+                                        })
+        
+                                    }
                                 })
-                            } else {
-                                res.json({
-                                    status: statusS,
-                                    data: product1,
-                                    message: "Add Product Successfully"
-                                })
-
-                            }
-                        })
+                            })
                     }
                 })
             } else {
@@ -199,9 +258,8 @@ class song {
         form1.multiples = true;
         form1.parse(req, async (err, input_all, files) => {
 
-            let { id_Topic, id_Categories, id_album } = input_all;
+            let { id_Topic, id_Categories, id_album, id_artist } = input_all;
             let get_id = req.params.idsong;
-
 
             const condition = {
                 _id: mongoose.Types.ObjectId(get_id)
@@ -210,7 +268,8 @@ class song {
                 ...input_all,
                 id_album: mongoose.Types.ObjectId(id_album),
                 id_Categories: mongoose.Types.ObjectId(id_Categories),
-                id_Topic: mongoose.Types.ObjectId(id_Topic)
+                id_Topic: mongoose.Types.ObjectId(id_Topic),
+                id_artist: mongoose.Types.ObjectId(id_artist),
             }
 
             const upload_files = files["image"];
@@ -223,8 +282,8 @@ class song {
             let find_index_path_audio = upload_audio.path.indexOf("upload");
             let cut_path_audio = upload_audio.path.slice(find_index_path_audio);
 
-            let getExtension = cut_path.split(".")[1];
-            let getExtension_audio = cut_path_audio.split(".")[1];
+            let getExtension = cut_path.split(".")[1]?.toLowerCase();
+            let getExtension_audio = cut_path_audio.split(".")[1]?.toLowerCase();
 
             if (getExtension_audio) {
                 if (extensionAudio.includes(getExtension_audio)) {
