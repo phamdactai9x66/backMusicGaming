@@ -86,22 +86,30 @@ class user {
             }
         })
     }
-    signUp(req, res) {
+    async signUp(req, res) {
         let form1 = res.locals.image_user;
         let { first_name, last_name, email, userName, passWord, confirmPassWord } = req.body;
 
+        const getUsers = await modelUser.find();
         if (first_name && last_name && email && userName && passWord && confirmPassWord) {
             let find_index_path = form1.path.indexOf("imageUser");
             let cut_path = form1.path.slice(find_index_path);
 
             let getExtension = cut_path.split(".")[1];
-            // if (!getExtension) {
-            //     return res.json({
-            //         status: statusF,
-            //         data: [],
-            //         message: `We don't allow file is blank !`
-            //     })
-            // }
+            const findUSer = getUsers.find(currenUser => (currenUser.userName === userName))
+            if (findUSer) {
+                return res.json({
+                    status: statusF,
+                    message: 'this user been exist!'
+                })
+            }
+            const findEmail = getUsers.find(currenUser => (currenUser.email === email))
+            if (findEmail) {
+                return res.json({
+                    status: statusF,
+                    message: 'this email been exist!'
+                })
+            }
             if (getExtension) {
                 if (!extensionImage.includes(getExtension.toLowerCase())) {
                     return res.json({
