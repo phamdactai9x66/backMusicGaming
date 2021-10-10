@@ -35,7 +35,7 @@ class detailBlog {
     getOne(req, res){
         let { idDetailBlog } = req.params;
         let condition = {
-            _id: mongoess.Types.ObjectId(idDetailBlog)
+            _id: mongoose.Types.ObjectId(idDetailBlog)
         }
         modelDetailBlog.findById(condition)
             .exec((err, resp) => {
@@ -127,7 +127,7 @@ class detailBlog {
             let get_id = req.params.idDetailBlog;
 
             const condition = {
-                _id: mongoess.Types.ObjectId(get_id)
+                _id: mongoose.Types.ObjectId(get_id)
             }
             var format_form = {
                 ...fields
@@ -170,7 +170,7 @@ class detailBlog {
     }
     delete(req, res){
         const condition = {
-            _id: mongoess.Types.ObjectId(req.params.idDetailBlog)
+            _id: mongoose.Types.ObjectId(req.params.idDetailBlog)
         }
         modelDetailBlog.findOneAndRemove(condition)
             .exec((err) => {
