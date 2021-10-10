@@ -103,7 +103,7 @@ class album {
                 let find_index_path = upload_files.path.indexOf("upload");
                 let cut_path = upload_files.path.slice(find_index_path);
 
-                let getExtension = cut_path.split(".")[1];
+                let getExtension = cut_path.split(".")[1]?.toLowerCase();
                 if (!getExtension) {
                     return res.json({
                         status: statusF,
@@ -184,8 +184,8 @@ class album {
 
             let find_index_path = upload_files.path.indexOf("upload");
             let cut_path = upload_files.path.slice(find_index_path);
-            let getExtension = cut_path.split(".")[1];
-
+            let getExtension = cut_path.split(".")[1]?.toLowerCase();
+            // console.log((getExtension + '').toLowerCase());
             if (getExtension) {
                 if (extensionImage.includes(getExtension)) {
                     format_form = {
