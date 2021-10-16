@@ -5,13 +5,17 @@ let mongoose = require("mongoose");
 
 class likeSong {
   index(req, res, next) {
-    let { id_Songs } = req.query;
+    let { id_Songs, id_User } = req.query;
     let condition = {
     }
     if (id_Songs) {
       condition = {
         ...condition, id_Songs: mongoose.Types.ObjectId(id_Songs)
       }
+    }
+
+    if(id_User){
+      condition={...condition, id_User: mongoose.Types.ObjectId(id_User)}
     }
 
     modelLikeSong.find(condition).exec((err, data) => {
