@@ -1,5 +1,5 @@
 const songsArtistModel = require('../models/songsArtist');
-const artistModel = require('../models/artist'); 
+const artistModel = require('../models/artist');
 const song = require('../models/song');
 const { statusS, statusF } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
@@ -11,10 +11,12 @@ class songsArtist {
     }
     if (id_Songs) {
       condition = {
-        ...condition, id_Songs: mongoose.Types.ObjectId(id_Songs)
+        ...condition, ...res.query, id_Songs: mongoose.Types.ObjectId(id_Songs)
       }
     }
-
+    condition = {
+      ...condition, ...res.query
+    }
     songsArtistModel.find(condition).exec((err, data) => {
       if (err) {
         return res.json({
@@ -31,23 +33,23 @@ class songsArtist {
       }
     });
   }
-  getOne(req, res){
-    let {idSongsArtist} = req.params;
+  getOne(req, res) {
+    let { idSongsArtist } = req.params;
     let condition = {
       _id: mongoose.Types.ObjectId(idSongsArtist)
     }
     songsArtistModel.findById(condition).exec((err, resp) => {
       if (err || !resp) {
         return res.json({
-            status: statusF,
-            data: [],
-            message: `We have some error:${resp}`
+          status: statusF,
+          data: [],
+          message: `We have some error:${resp}`
         })
       } else {
         return res.json({
-            status: statusS,
-            data: resp,
-            message: ``
+          status: statusS,
+          data: resp,
+          message: ``
         })
       }
     })
@@ -55,60 +57,60 @@ class songsArtist {
   async create(req, res) {
 
     try {
-      let { id_Songs: idS, id_Artist: idA  } = req.body;
+      let { id_Songs: idS, id_Artist: idA } = req.body;
       let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) })
       let findArtist = await artistModel.find({ _id: mongoose.Types.ObjectId(idA) })
 
       if (findSong.length && findArtist.length) {
 
         let newData = {
-            id_Songs: mongoose.Types.ObjectId(idS),
-            id_Artist: mongoose.Types.ObjectId(idA),
+          id_Songs: mongoose.Types.ObjectId(idS),
+          id_Artist: mongoose.Types.ObjectId(idA),
         }
 
         let createSongsArtist = await new songsArtistModel(newData)
         createSongsArtist.save((err, data) => {
           if (err) {
             res.json({
-                status: statusF,
-                message: `We have few error: ${err}`
+              status: statusF,
+              message: `We have few error: ${err}`
             })
-        } else {
+          } else {
             res.json({
-                status: statusS,
-                data: data,
-                message: "Add Successfully"
+              status: statusS,
+              data: data,
+              message: "Add Successfully"
             })
-        }
+          }
         });
-    }
+      }
     } catch (error) {
       res.json({
         status: statusF,
-        data: [], 
+        data: [],
         error: error
-    })
+      })
     }
   }
   async update(req, res) {
     try {
-        let { id_Songs: idS, id_Artist: idA  } = req.body;
-        let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) })
-        let findArtist = await artistModel.find({ _id: mongoose.Types.ObjectId(idA) })
-  
-        if (findSong.length && findArtist.length) {
-  
+      let { id_Songs: idS, id_Artist: idA } = req.body;
+      let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) })
+      let findArtist = await artistModel.find({ _id: mongoose.Types.ObjectId(idA) })
+
+      if (findSong.length && findArtist.length) {
+
         let newData = {
-            id_Songs: mongoose.Types.ObjectId(idS),
-            id_Artist: mongoose.Types.ObjectId(idA),
+          id_Songs: mongoose.Types.ObjectId(idS),
+          id_Artist: mongoose.Types.ObjectId(idA),
         }
-  
+
         let idSongsArtist = req.params.idSongsArtist;
 
         const condition = {
-            _id: mongoose.Types.ObjectId(idSongsArtist)
+          _id: mongoose.Types.ObjectId(idSongsArtist)
         }
-        
+
         songsArtistModel.findOneAndUpdate(condition, { $set: newData }, { new: true })
           .exec((err, new_data) => {
             if (err) {
@@ -129,30 +131,30 @@ class songsArtist {
     } catch (error) {
       res.json({
         status: statusF,
-        data: [], 
+        data: [],
         error: error
-    })
+      })
     }
   }
   delete(req, res) {
     const condition = {
-        _id: mongoose.Types.ObjectId(req.params.idSongsArtist)
+      _id: mongoose.Types.ObjectId(req.params.idSongsArtist)
     }
     songsArtistModel.findOneAndRemove(condition)
-        .exec((err) => {
-            if (err) {
-                res.json({
-                    status: "failed",
-                    message: `We have few error: ${err}`
-                })
-            } else {
-                res.json({
-                    status: "successfully",
-                    data: {}
-                })
-            }
-        })
+      .exec((err) => {
+        if (err) {
+          res.json({
+            status: "failed",
+            message: `We have few error: ${err}`
+          })
+        } else {
+          res.json({
+            status: "successfully",
+            data: {}
+          })
+        }
+      })
 
-}
+  }
 }
 module.exports = new songsArtist();
