@@ -13,86 +13,86 @@ class song {
         let { _page, _limit, name, _id, id_artist, view, date, day_release, active, id_Topic, id_Categories, id_album } = req.query;
 
         let sort_by = {};
-        if(view){ 
-            if(view === "asc" || view === "desc"){
-                sort_by = {...sort_by, view: view === "asc" ? 1 : -1};
-            }else{
+        if (view) {
+            if (view === "asc" || view === "desc") {
+                sort_by = { ...sort_by, view: view === "asc" ? 1 : -1 };
+            } else {
                 return res.status(400).json({
-                    status: statusF,
-                    data:[],
-                    message: "You need input with 'asc' or 'desc'."
-                })
-            } 
-        }
-        if(date) { 
-            if(date === "asc" || date === "desc"){
-                sort_by = {...sort_by, createdAt: date === "asc" ? 1 : -1}; 
-            }else{
-                return res.status(400).json({
-                    status: statusF,
-                    data:[],
-                    message: "You need input with 'asc' or 'desc'."
-                })
-            }
-        }
-        if(day_release) { 
-            if(day_release === "asc" || day_release === "desc"){
-                sort_by = {...sort_by, day_release: day_release === "asc" ? 1 : -1};
-            }else{
-                return res.status(400).json({
-                    status: statusF,
-                    data:[],
-                    message: "You need input with 'asc' or 'desc'."
-                })
-            }
-        }
-        
-        let condition = {};
-        if(id_artist) condition = {...condition, id_artist: id_artist};
-        if(active) condition = {...condition, active: active};
-        if(id_Topic) condition = {...condition, id_Topic: id_Topic};
-        if(id_Categories) condition = {...condition, id_Categories: id_Categories};
-        if(id_album) condition = {...condition, id_album: id_album};
-
-        SongModel.find(condition).sort(sort_by).limit(_limit * 1).skip((_page - 1) * _limit).select({})
-        .exec((err, response) => {
-            if (err || !response) {
-                return res.json({
                     status: statusF,
                     data: [],
-                    message: `we have some error:${err}`
-                })
-            } else {
-                if (name) {
-                    let findName = response.filter(currenT => {
-
-                        let nameTopic = currenT.title.toLowerCase();
-                        let ParamsName = name.toLowerCase();
-
-                        return nameTopic.indexOf(ParamsName) != -1;
-                    })
-                    return res.json({
-                        status: statusS,
-                        data: findName,
-                        message: "get data successfully"
-                    })
-                } else if (_id) {
-                    let findId = response.find(currenT => currenT._id == _id);
-                    return res.json({
-                        status: statusS,
-                        data: findId,
-                        message: "get data successfully"
-                    })
-                }
-                return res.json({
-                    status: statusS,
-                    data: response,
-                    message: ``
+                    message: "You need input with 'asc' or 'desc'."
                 })
             }
+        }
+        if (date) {
+            if (date === "asc" || date === "desc") {
+                sort_by = { ...sort_by, createdAt: date === "asc" ? 1 : -1 };
+            } else {
+                return res.status(400).json({
+                    status: statusF,
+                    data: [],
+                    message: "You need input with 'asc' or 'desc'."
+                })
+            }
+        }
+        if (day_release) {
+            if (day_release === "asc" || day_release === "desc") {
+                sort_by = { ...sort_by, day_release: day_release === "asc" ? 1 : -1 };
+            } else {
+                return res.status(400).json({
+                    status: statusF,
+                    data: [],
+                    message: "You need input with 'asc' or 'desc'."
+                })
+            }
+        }
 
-        })
-        
+        let condition = {};
+        if (id_artist) condition = { ...condition, id_artist: id_artist };
+        if (active) condition = { ...condition, active: active };
+        if (id_Topic) condition = { ...condition, id_Topic: id_Topic };
+        if (id_Categories) condition = { ...condition, id_Categories: id_Categories };
+        if (id_album) condition = { ...condition, id_album: id_album };
+
+        SongModel.find(condition).sort(sort_by).limit(_limit * 1).skip((_page - 1) * _limit).select({})
+            .exec((err, response) => {
+                if (err || !response) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `we have some error:${err}`
+                    })
+                } else {
+                    if (name) {
+                        let findName = response.filter(currenT => {
+
+                            let nameTopic = currenT.title.toLowerCase();
+                            let ParamsName = name.toLowerCase();
+
+                            return nameTopic.indexOf(ParamsName) != -1;
+                        })
+                        return res.json({
+                            status: statusS,
+                            data: findName,
+                            message: "get data successfully"
+                        })
+                    } else if (_id) {
+                        let findId = response.find(currenT => currenT._id == _id);
+                        return res.json({
+                            status: statusS,
+                            data: findId,
+                            message: "get data successfully"
+                        })
+                    }
+                    return res.json({
+                        status: statusS,
+                        data: response,
+                        message: ``
+                    })
+                }
+
+            })
+
     }
     createSong(req, res) {
         let form1 = formidable.IncomingForm();
@@ -101,7 +101,7 @@ class song {
         form1.maxFieldsSize = 1 * 1024 * 1024;
         form1.multiples = true;
         form1.parse(req, (err, all_input, files) => {
-            let { title, view, active, describe, id_Topic, id_Categories, id_album, day_release, id_artist } = all_input;
+            let { title, view, active, describe, id_Topic, id_Categories, id_album, day_release } = all_input;
 
             if (title && view != undefined && files["image"] && files["audio"] && active
                 && describe && id_Topic && id_Categories && id_album && day_release && id_artist
@@ -195,7 +195,7 @@ class song {
                                             data: product1,
                                             message: "Add Product Successfully"
                                         })
-        
+
                                     }
                                 })
                             })

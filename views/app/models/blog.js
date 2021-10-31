@@ -28,6 +28,9 @@ const Blog = new Schema({
     },
     id_CategoryBlog: {
         type: Schema.ObjectId,
+    },
+    link_Video: {
+        type: String, trim: true, default: ''
     }
 }, {
     timestamps: true
