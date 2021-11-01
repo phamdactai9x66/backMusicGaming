@@ -12,6 +12,21 @@ class likeSong {
       condition = {
         ...condition, id_Songs: mongoose.Types.ObjectId(id_Songs)
       }
+      if (id_User) {
+        condition = {
+          ...condition, id_User: mongoose.Types.ObjectId(id_User)
+        }
+      }
+    }
+    if (id_User) {
+      condition = {
+        ...condition, id_User: mongoose.Types.ObjectId(id_User)
+      }
+      if (id_Songs) {
+        condition = {
+          ...condition, id_Songs: mongoose.Types.ObjectId(id_Songs)
+        }
+      }
     }
 
     if(id_User){
@@ -45,8 +60,8 @@ class likeSong {
       })
     }
     let findLikeSong = await modelLikeSong.find({
-        id_User: mongoose.Types.ObjectId(idU),
-        id_Songs: mongoose.Types.ObjectId(idS),
+      id_User: mongoose.Types.ObjectId(idU),
+      id_Songs: mongoose.Types.ObjectId(idS),
     })
     if (!findLikeSong.length) {
       let dataLikeSong = {
@@ -88,8 +103,8 @@ class likeSong {
       })
     }
     let dataLikeSong = {
-        id_User: mongoose.Types.ObjectId(idU),
-        id_Songs: mongoose.Types.ObjectId(idS),
+      id_User: mongoose.Types.ObjectId(idU),
+      id_Songs: mongoose.Types.ObjectId(idS),
     }
 
     let { idLikeSong } = req.params;
