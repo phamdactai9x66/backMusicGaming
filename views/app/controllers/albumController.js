@@ -17,6 +17,13 @@ class album {
                 _id: mongoess.Types.ObjectId(_id)
             }
         }
+        if (title) {
+            condition = {
+                ...condition,
+                title: new RegExp(`${title}`, 'i')
+            }
+        }
+
         modelAlbum.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, data) => {
                 if (err || !data) {

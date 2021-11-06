@@ -31,7 +31,7 @@ class UserPlaylist {
                         message: `we have some error:${err}`
                     })
                 }else if(data.length === 0){
-                    return res.status(400).json({
+                    return res.json({
                         status: statusF,
                         data: [],
                         message: "Playlist does not exist."

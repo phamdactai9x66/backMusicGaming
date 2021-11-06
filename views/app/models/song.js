@@ -30,13 +30,6 @@ const song = new Schema({
     id_album: {
         type: Schema.ObjectId
     },
-    id_artist: {
-        type: Schema.ObjectId,
-        require: true
-    },
-    name_artist: {
-        type: String
-    }
 }, {
     timestamps: true
 })
