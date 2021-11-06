@@ -45,6 +45,9 @@ class song {
                 })
             }
         }
+        if(name){
+            condition = {...condition, name: new RegExp(`${name}`, 'i')}
+        }
 
         let condition = {};
         if(active) condition = {...condition, active: active};

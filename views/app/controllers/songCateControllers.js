@@ -9,7 +9,12 @@ let formidable = require("formidable")
 class songCate {
     async index(req, res, next) {
         let { _page, _limit, name, _id } = req.query;
-        songCateModel.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
+
+        let condition = {};
+        if(name){
+            condition = {...condition, name: new RegExp(`${name}`, 'i')}
+        }
+        songCateModel.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, response) => {
                 if (err || !response) {
                     return res.json({
