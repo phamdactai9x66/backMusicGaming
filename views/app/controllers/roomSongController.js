@@ -1,12 +1,12 @@
 const roomSongModel = require('../models/roomSong');
 const song = require('../models/song');
-const userModel = require('../models/user');
+// const userModel = require('../models/user');
 const { statusS, statusF } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
 
 class roomSongController {
   index(req, res, next) {
-    let { _id, _idSong, _idUser } = req.query;
+    let { _id, _idSong, _idRoom } = req.query;
 
     let condition = {};
     if (_id) {
@@ -19,9 +19,9 @@ class roomSongController {
         ...condition, ...res.query, id_Song: mongoose.Types.ObjectId(_idSong)
       }
     }
-    if (_idUser) {
+    if (_idRoom) {
       condition = {
-        ...condition, ...res.query, id_User: mongoose.Types.ObjectId(_idUser)
+        ...condition, ...res.query, id_Room: mongoose.Types.ObjectId(_idRoom)
       }
     }
 
@@ -82,8 +82,8 @@ class roomSongController {
   async create(req, res) {
 
     try {
-      let { id_Song: idS, id_User: idU } = req.body;
-      if(!idS || !idU){
+      let { id_Song: idS, id_Room: idR } = req.body;
+      if(!idS || !idR){
           return res.json({
               status: statusF,
               data: [],
@@ -91,13 +91,14 @@ class roomSongController {
           })
       }
       let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) });
-      let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idU) });
+    //   let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
 
-      if (findSong.length === 0 || findUser.length === 0) {
+      if (findSong.length !== 0) {
+        // if (findSong.length !== 0 || findUser.length !== 0) {
 
         let newData = {
           id_Song: mongoose.Types.ObjectId(idS),
-          id_User: mongoose.Types.ObjectId(idU),
+          id_Room: mongoose.Types.ObjectId(idR),
         }
 
         let createRoomSong = await new roomSongModel(newData)
@@ -119,7 +120,7 @@ class roomSongController {
           return res.json({
               status: statusF,
               data: [],
-              message: "Bài hát hoặc Tài khoản không tồn tại, Song or User does not exist."
+              message: "Bài hát hoặc Phòng không tồn tại, Song or Room does not exist."
           });
       }
 
@@ -133,9 +134,9 @@ class roomSongController {
   }
   async update(req, res) {
     try {
-        let { id_Song: idS, id_User: idU } = req.body;
+        let { id_Song: idS, id_Room: idR } = req.body;
 
-        if(!idS || !idU){
+        if(!idS || !idR){
             return res.json({
                 status: statusF,
                 data: [],
@@ -144,18 +145,19 @@ class roomSongController {
         };
 
         let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) });
-        let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idU) });
+        // let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
 
-        if (findSong.length === 0 && findUser.length === 0) {
+        if (findSong.length !== 0) {
+            // if (findSong.length !== 0 || findUser.length !== 0) {
             let newData = {
-            id_Song: mongoose.Types.ObjectId(idS),
-            id_User: mongoose.Types.ObjectId(idU),
+                id_Song: mongoose.Types.ObjectId(idS),
+                id_Room: mongoose.Types.ObjectId(idR),
             }
 
             let idRoomSong = req.params.idRoomSong;
 
             const condition = {
-            _id: mongoose.Types.ObjectId(idRoomSong)
+                _id: mongoose.Types.ObjectId(idRoomSong)
             }
 
             roomSongModel.findOneAndUpdate(condition, { $set: newData }, { new: true })
@@ -178,7 +180,7 @@ class roomSongController {
             return res.json({
                 status: statusF,
                 data: [],
-                message: "Bài hát hoặc Tài khoản không tồn tại, Song or User does not exist."
+                message: "Bài hát hoặc Tài khoản không tồn tại, Song or Room does not exist."
             });
         }
     } catch (error) {
