@@ -1,12 +1,12 @@
-const roomSongModel = require('../models/roomSong');
-const song = require('../models/song');
-// const userModel = require('../models/user');
+const roomUserModel = require('../models/roomUser');
+// const song = require('../models/song');
+const userModel = require('../models/user');
 const { statusS, statusF } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
 
-class roomSongController {
+class roomUserController {
   index(req, res, next) {
-    let { _id, _idSong, _idRoom } = req.query;
+    let { _id, _idRoom, _idUser } = req.query;
 
     let condition = {};
     if (_id) {
@@ -14,14 +14,14 @@ class roomSongController {
         ...condition, ...res.query, _id: mongoose.Types.ObjectId(_id)
       }
     }
-    if (_idSong) {
-      condition = {
-        ...condition, ...res.query, id_Song: mongoose.Types.ObjectId(_idSong)
-      }
-    }
     if (_idRoom) {
       condition = {
         ...condition, ...res.query, id_Room: mongoose.Types.ObjectId(_idRoom)
+      }
+    }
+    if (_idUser) {
+      condition = {
+        ...condition, ...res.query, id_User: mongoose.Types.ObjectId(_idUser)
       }
     }
 
@@ -29,10 +29,10 @@ class roomSongController {
       ...condition, ...res.query
     }
     
-    roomSongModel.find(condition).exec((err, data) => {
+    roomUserModel.find(condition).exec((err, data) => {
       if (err) {
         return res.json({
-          message: `We have some error: ${err}`,
+          message: `We have some error:${err}`,
           status: statusF,
           data: [],
         });
@@ -44,7 +44,7 @@ class roomSongController {
         })
       } else {
         return res.json({
-          message: "Get room song successfully.",
+          message: "Get room user successfully.",
           status: statusS,
           data: data,
         });
@@ -52,12 +52,12 @@ class roomSongController {
     });
   }
   getOne(req, res) {
-    let { idRoomSong } = req.params;
+    let { idRoomUser } = req.params;
 
     let condition = {
-      _id: mongoose.Types.ObjectId(idRoomSong)
+      _id: mongoose.Types.ObjectId(idRoomUser)
     }
-    roomSongModel.findById(condition).exec((err, resp) => {
+    roomUserModel.findById(condition).exec((err, resp) => {
       if (err || !resp) {
         return res.json({
           status: statusF,
@@ -82,27 +82,29 @@ class roomSongController {
   async create(req, res) {
 
     try {
-      let { id_Song: idS, id_Room: idR } = req.body;
-      if(!idS || !idR){
+      let { id_Room: idR, id_User: idU } = req.body;
+      
+      if(!idR || !idU){
           return res.json({
               status: statusF,
               data: [],
               message: "Vui lòng nhập đủ thông tin."
           })
       }
-      let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) });
-    //   let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
 
-      if (findSong.length !== 0) {
-        // if (findSong.length !== 0 || findUser.length !== 0) {
+    //   let findRoom = await song.find({ _id: mongoose.Types.ObjectId(idR) });
+      let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idU) });
+
+    if (findUser.length !== 0) {
+    // if (findRoom.length !== 0 || findUser.length !== 0) {
 
         let newData = {
-          id_Song: mongoose.Types.ObjectId(idS),
           id_Room: mongoose.Types.ObjectId(idR),
+          id_User: mongoose.Types.ObjectId(idU),
         }
 
-        let createRoomSong = await new roomSongModel(newData)
-        createRoomSong.save((err, data) => {
+        let createRoomUser = await new roomUserModel(newData)
+        createRoomUser.save((err, data) => {
           if (err) {
             return res.json({
               status: statusF,
@@ -112,7 +114,7 @@ class roomSongController {
             return res.json({
               status: statusS,
               data: [data],
-              message: "Add Song to Room successfully"
+              message: "Add User to Room successfully"
             })
           }
         });
@@ -120,12 +122,12 @@ class roomSongController {
           return res.json({
               status: statusF,
               data: [],
-              message: "Bài hát hoặc Phòng không tồn tại, Song or Room does not exist."
+              message: "Tài khoản hoặc Phòng không tồn tại, User or Room does not exist."
           });
       }
 
     } catch (error) {
-      return res.json({
+      res.json({
         status: statusF,
         data: [],
         error: error
@@ -134,9 +136,9 @@ class roomSongController {
   }
   async update(req, res) {
     try {
-        let { id_Song: idS, id_Room: idR } = req.body;
+        let { id_Room: idR, id_User: idU } = req.body;
 
-        if(!idS || !idR){
+        if(!idR || !idU){
             return res.json({
                 status: statusF,
                 data: [],
@@ -144,43 +146,42 @@ class roomSongController {
             })
         };
 
-        let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) });
-        // let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
+        // let findRoom = await song.find({ _id: mongoose.Types.ObjectId(idR) });
+        let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idU) });
 
-        if (findSong.length !== 0) {
-            // if (findSong.length !== 0 || findUser.length !== 0) {
+        if (findUser.length !== 0) {
+        // if (findRoom.length !== 0 || findUser.length !== 0) {
             let newData = {
-                id_Song: mongoose.Types.ObjectId(idS),
                 id_Room: mongoose.Types.ObjectId(idR),
+                id_User: mongoose.Types.ObjectId(idR),
             }
 
-            let idRoomSong = req.params.idRoomSong;
+            let idRoomUser = req.params.idRoomUser;
 
             const condition = {
-                _id: mongoose.Types.ObjectId(idRoomSong)
+                _id: mongoose.Types.ObjectId(idRoomUser)
             }
 
-            roomSongModel.findOneAndUpdate(condition, { $set: newData }, { new: true })
+            roomUserModel.findOneAndUpdate(condition, { $set: newData }, { new: true })
             .exec((err, new_data) => {
                 if (err) {
-                return res.json({
-                    status: "failed",
-                    message: `We have few error: ${err}`
-                })
+                    return res.json({
+                        status: "failed",
+                        message: `We have few error: ${err}`
+                    })
                 } else {
-                return res.json({
-                    status: "successfully",
-                    data: [new_data],
-                    message: `You were update successfully`
-                })
-
+                    return res.json({
+                        status: "successfully",
+                        data: [new_data],
+                        message: `You were update successfully`
+                    })
                 }
             })
         }else{
             return res.json({
                 status: statusF,
                 data: [],
-                message: "Bài hát hoặc Phòng không tồn tại, Song or Room does not exist."
+                message: "Bài hát hoặc Tài khoản không tồn tại, Song or User does not exist."
             });
         }
     } catch (error) {
@@ -193,9 +194,9 @@ class roomSongController {
   }
   delete(req, res) {
     const condition = {
-      _id: mongoose.Types.ObjectId(req.params.idRoomSong)
+      _id: mongoose.Types.ObjectId(req.params.idRoomUser)
     }
-    roomSongModel.findOneAndRemove(condition)
+    roomUserModel.findOneAndRemove(condition)
       .exec((err) => {
         if (err) {
           return res.json({
@@ -213,4 +214,4 @@ class roomSongController {
 
   }
 }
-module.exports = new roomSongController();
+module.exports = new roomUserController();
