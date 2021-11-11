@@ -12,7 +12,7 @@ let path = require("path");
 class blogController {
   // lấy dữ liệu theo query nhé ae
   index(req, res, next) {
-    let { _page, _limit, _id, id_User, id_CategoryBlog } = req.query;
+    let { _page, _limit, _id, id_User, id_CategoryBlog, title } = req.query;
     let condition = {};
     if (_id) {
       condition = {
@@ -30,6 +30,12 @@ class blogController {
       condition = {
         ...condition,
         id_CategoryBlog: mongoose.Types.ObjectId(id_CategoryBlog),
+      };
+    }
+    if (title) {
+      condition = {
+        ...condition,
+        title: new RegExp(`${title}`, 'i'),
       };
     }
 

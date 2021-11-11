@@ -29,6 +29,10 @@ class likeSong {
       }
     }
 
+    if(id_User){
+      condition={...condition, id_User: mongoose.Types.ObjectId(id_User)}
+    }
+
     modelLikeSong.find(condition).exec((err, data) => {
       if (err) {
         return res.json({
