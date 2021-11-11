@@ -22,6 +22,7 @@ const songPlaylist = require('./songPlaylist');
 
 const roomSong = require('./roomSong');
 const roomUser = require('./roomUser');
+const room= require('./room');
 
 
 function routes(app) {
@@ -45,6 +46,7 @@ function routes(app) {
   app.use('/likeSong', likeSong);
   app.use('/roomSong', roomSong);
   app.use('/roomUser', roomUser);
+  app.use('/room', room);
 
   app.use("/", side);
 }
