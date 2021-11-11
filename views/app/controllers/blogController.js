@@ -17,7 +17,7 @@ class blogController {
     if (_id) {
       condition = {
         ...condition,
-        _id
+        _id: mongoose.Types.ObjectId(_id),
       };
     }
     if (id_User) {

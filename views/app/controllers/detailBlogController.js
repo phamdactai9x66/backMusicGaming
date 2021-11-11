@@ -6,14 +6,14 @@ const formidable = require("formidable");
 let path = require("path");
 
 class detailBlog {
-    async index(req, res) {
+    async index(req, res){
         const { _limit, _page } = req.query;
         let condittion = {}
         let { id_Blog, _id } = req.query;
         try {
             if (id_Blog) {
                 if (id_Blog.length >= 1) {
-                    condittion = { ...condittion, id_Blog }
+                    condittion = { ...condittion, id_Blog: mongoose.Types.ObjectId(id_Blog) }
                 }
             } else if (_id) {
                 if (_id.length >= 1) {
@@ -32,10 +32,10 @@ class detailBlog {
             })
         }
     }
-    getOne(req, res) {
+    getOne(req, res){
         let { idDetailBlog } = req.params;
         let condition = {
-            _id: mongoess.Types.ObjectId(idDetailBlog)
+            _id: mongoose.Types.ObjectId(idDetailBlog)
         }
         modelDetailBlog.findById(condition)
             .exec((err, resp) => {
@@ -54,7 +54,7 @@ class detailBlog {
                 }
             })
     }
-    create(req, res) {
+    create(req ,res){
         let form = new formidable.IncomingForm();
         form.uploadDir = path.join(__dirname, "../../public/uploads");
         form.keepExtensions = true;
@@ -62,7 +62,7 @@ class detailBlog {
         form.multiples = true;
 
         form.parse(req, async (err, fields, files) => {
-            let { id_Blog: idB, title, content } = fields;
+            let { id_Blog: idB , title, content} = fields;
             let findBlog = await modelBlog.find({ _id: mongoose.Types.ObjectId(idB) })
 
             if (findBlog.length && content && title && files["image"]) {
@@ -115,7 +115,7 @@ class detailBlog {
             }
         });
     }
-    edit(req, res) {
+    edit(req, res){
         let form = formidable.IncomingForm();
         form.uploadDir = path.join(__dirname, "../../public/uploads");
         form.keepExtensions = true;
@@ -127,7 +127,7 @@ class detailBlog {
             let get_id = req.params.idDetailBlog;
 
             const condition = {
-                _id: mongoess.Types.ObjectId(get_id)
+                _id: mongoose.Types.ObjectId(get_id)
             }
             var format_form = {
                 ...fields
@@ -168,9 +168,9 @@ class detailBlog {
                 })
         })
     }
-    delete(req, res) {
+    delete(req, res){
         const condition = {
-            _id: mongoess.Types.ObjectId(req.params.idDetailBlog)
+            _id: mongoose.Types.ObjectId(req.params.idDetailBlog)
         }
         modelDetailBlog.findOneAndRemove(condition)
             .exec((err) => {

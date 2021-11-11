@@ -18,9 +18,9 @@ const song = new Schema({
         type: String
     },
     day_release: {
-        type: String
-    }
-    ,
+        type: String,
+        require: true
+    },
     id_Topic: {
         type: Schema.ObjectId
     },
@@ -29,6 +29,13 @@ const song = new Schema({
     },
     id_album: {
         type: Schema.ObjectId
+    },
+    id_artist: {
+        type: Schema.ObjectId,
+        require: true
+    },
+    name_artist: {
+        type: String
     }
 }, {
     timestamps: true

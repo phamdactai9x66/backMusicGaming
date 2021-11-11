@@ -189,7 +189,7 @@ class topics {
             const cutPath = uploadFile.path.slice(indexOfPath);
 
             const checkImage = cutPath.split(".")[1];
-            let data = {
+            let format_form = {
                 ...fields
             };
             if (checkImage) {
@@ -205,7 +205,7 @@ class topics {
                     })
                 }
             }
-            topic.findOneAndUpdate(condition, { $set: data }, { new: true })
+            topic.findOneAndUpdate(condition, { $set: format_form }, { new: true })
                 .exec((err, newData) => {
                     if (err) {
                         return res.json({
