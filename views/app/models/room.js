@@ -8,7 +8,7 @@ const room = new Schema({//chung ta dang mo ta cai luc do(schema) trong colectio
     name_Room: {
         type: String, maxLengt: 255, trim: true
     },
-    password: { type: String, maxLengt: 255, trim: true },
+    password: { type: String, maxLengt: 255 },
     limit_User: {
         type: Number
     },
@@ -21,7 +21,7 @@ const room = new Schema({//chung ta dang mo ta cai luc do(schema) trong colectio
 })
 room.pre("save", async function name(next) {
     try {
-        if (this.authType != "local") { next() }
+        // if (this.authType != "local") { next() }
         let general_sal = await bcrypt.genSalt(10);
 
         let passWordHash = await bcrypt.hash(this.password, general_sal);
