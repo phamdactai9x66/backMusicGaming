@@ -8,11 +8,14 @@ let formidable = require("formidable")
 
 class songCate {
     async index(req, res, next) {
-        let { _page, _limit, name, _id } = req.query;
+        let { _page, _limit, name, _id, id_Topic } = req.query;
 
         let condition = {};
-        if(name){
-            condition = {...condition, name: new RegExp(`${name}`, 'i')}
+        if (name) {
+            condition = { ...condition, name: new RegExp(`${name}`, 'i') }
+        }
+        if (id_Topic) {
+            condition = { ...condition, id_Topic }
         }
         songCateModel.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, response) => {
