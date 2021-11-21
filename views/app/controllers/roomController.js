@@ -5,6 +5,7 @@ const path = require("path");
 const { statusF, statusS, localhost, extensionImage } = require("../validator/variableCommon");
 const { encode_jwt, decode_jwt } = require("../validator/methodCommon");
 let formidable = require("formidable")
+let bcrypt = require("bcrypt")
 
 class room {
     async index(req, res, next) {
@@ -105,8 +106,28 @@ class room {
             })
         }
     }
-    enterRoom() {
-
+    async enterRoom(req, res) {
+        let { password, idRoom } = req.body;
+        const find_Room = await modelRoom.findById(idRoom)
+        if (find_Room != null) {
+            const check_compar_pass = await bcrypt.compare(password, find_Room.password);
+            if (check_compar_pass) {
+                return res.json({
+                    status: statusS,
+                    message: "Hey you was passed."
+                })
+            } else {
+                return res.json({
+                    status: statusF,
+                    message: "password not match"
+                })
+            }
+        } else {
+            return res.json({
+                status: statusF,
+                message: "Room was't existed"
+            })
+        }
     }
     editRoom(req, res) {
 

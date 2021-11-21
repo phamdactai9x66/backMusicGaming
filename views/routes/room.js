@@ -9,7 +9,7 @@ router.get("/", room_Controller.index);
 router.get("/:idRoom", room_Controller.getOne);
 
 // router.get("/:idRoom", room_Controller.enterRoom);
-
+router.post("/checkPassword", room_Controller.enterRoom);
 router.post("/add", room_Controller.createRoom);
 
 router.put("/:idRoom/update", room_Controller.editRoom);
