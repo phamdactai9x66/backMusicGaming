@@ -20,7 +20,7 @@ class room {
                 } else {
                     if (name_Room) {
                         let findName = data.filter(currenT => {
-                            let nameRoom = currenT.name.toLocaleLowerCase();
+                            let nameRoom = currenT.name_Room.toLocaleLowerCase();
                             let ParamsName = name_Room.toLocaleLowerCase();
 
                             return nameRoom.indexOf(ParamsName) != -1;

@@ -13,6 +13,7 @@ class blogController {
   // lấy dữ liệu theo query nhé ae
   index(req, res, next) {
     let { _page, _limit, _id, id_User, id_CategoryBlog, title } = req.query;
+    console.log(req.headers)
     let condition = {};
     if (_id) {
       condition = {

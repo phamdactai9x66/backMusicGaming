@@ -6,7 +6,7 @@ let mongoose = require("mongoose");
 
 class roomSongController {
   index(req, res, next) {
-    let { _id, _idSong, _idRoom } = req.query;
+    let { _id, id_Song, id_Room } = req.query;
 
     let condition = {};
     if (_id) {
@@ -14,21 +14,21 @@ class roomSongController {
         ...condition, ...res.query, _id: mongoose.Types.ObjectId(_id)
       }
     }
-    if (_idSong) {
+    if (id_Song) {
       condition = {
-        ...condition, ...res.query, id_Song: mongoose.Types.ObjectId(_idSong)
+        ...condition, ...res.query, id_Song: mongoose.Types.ObjectId(id_Song)
       }
     }
-    if (_idRoom) {
+    if (id_Room) {
       condition = {
-        ...condition, ...res.query, id_Room: mongoose.Types.ObjectId(_idRoom)
+        ...condition, ...res.query, id_Room: mongoose.Types.ObjectId(id_Room)
       }
     }
 
     condition = {
       ...condition, ...res.query
     }
-    
+
     roomSongModel.find(condition).exec((err, data) => {
       if (err) {
         return res.json({
@@ -36,11 +36,11 @@ class roomSongController {
           status: statusF,
           data: [],
         });
-      }else if(data.length === 0){
+      } else if (data.length === 0) {
         return res.json({
-            status: statusF,
-            data: data,
-            message: "Không tìm thấy dữ liệu theo yêu cầu."
+          status: statusF,
+          data: data,
+          message: "Không tìm thấy dữ liệu theo yêu cầu."
         })
       } else {
         return res.json({
@@ -64,12 +64,12 @@ class roomSongController {
           data: [],
           message: `We have some error:${resp}`
         })
-      }else if(resp.length === 0){
-          return res.json({
-              status: statusF,
-              data: resp,
-              message: "Không tìm thấy phòng yêu cầu.",
-          })
+      } else if (resp.length === 0) {
+        return res.json({
+          status: statusF,
+          data: resp,
+          message: "Không tìm thấy phòng yêu cầu.",
+        })
       } else {
         return res.json({
           status: statusS,
@@ -83,15 +83,15 @@ class roomSongController {
 
     try {
       let { id_Song: idS, id_Room: idR } = req.body;
-      if(!idS || !idR){
-          return res.json({
-              status: statusF,
-              data: [],
-              message: "Vui lòng nhập đủ thông tin."
-          })
+      if (!idS || !idR) {
+        return res.json({
+          status: statusF,
+          data: [],
+          message: "Vui lòng nhập đủ thông tin."
+        })
       }
       let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) });
-    //   let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
+      //   let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
 
       if (findSong.length !== 0) {
         // if (findSong.length !== 0 || findUser.length !== 0) {
@@ -116,12 +116,12 @@ class roomSongController {
             })
           }
         });
-      }else{
-          return res.json({
-              status: statusF,
-              data: [],
-              message: "Bài hát hoặc Phòng không tồn tại, Song or Room does not exist."
-          });
+      } else {
+        return res.json({
+          status: statusF,
+          data: [],
+          message: "Bài hát hoặc Phòng không tồn tại, Song or Room does not exist."
+        });
       }
 
     } catch (error) {
@@ -134,55 +134,55 @@ class roomSongController {
   }
   async update(req, res) {
     try {
-        let { id_Song: idS, id_Room: idR } = req.body;
+      let { id_Song: idS, id_Room: idR } = req.body;
 
-        if(!idS || !idR){
-            return res.json({
-                status: statusF,
-                data: [],
-                messgae: "Vui lòng nhập đủ thông tin.",
-            })
-        };
+      if (!idS || !idR) {
+        return res.json({
+          status: statusF,
+          data: [],
+          messgae: "Vui lòng nhập đủ thông tin.",
+        })
+      };
 
-        let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) });
-        // let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
+      let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) });
+      // let findUser = await userModel.find({ _id: mongoose.Types.ObjectId(idR) });
 
-        if (findSong.length !== 0) {
-            // if (findSong.length !== 0 || findUser.length !== 0) {
-            let newData = {
-                id_Song: mongoose.Types.ObjectId(idS),
-                id_Room: mongoose.Types.ObjectId(idR),
-            }
-
-            let idRoomSong = req.params.idRoomSong;
-
-            const condition = {
-                _id: mongoose.Types.ObjectId(idRoomSong)
-            }
-
-            roomSongModel.findOneAndUpdate(condition, { $set: newData }, { new: true })
-            .exec((err, new_data) => {
-                if (err) {
-                return res.json({
-                    status: "failed",
-                    message: `We have few error: ${err}`
-                })
-                } else {
-                return res.json({
-                    status: "successfully",
-                    data: [new_data],
-                    message: `You were update successfully`
-                })
-
-                }
-            })
-        }else{
-            return res.json({
-                status: statusF,
-                data: [],
-                message: "Bài hát hoặc Phòng không tồn tại, Song or Room does not exist."
-            });
+      if (findSong.length !== 0) {
+        // if (findSong.length !== 0 || findUser.length !== 0) {
+        let newData = {
+          id_Song: mongoose.Types.ObjectId(idS),
+          id_Room: mongoose.Types.ObjectId(idR),
         }
+
+        let idRoomSong = req.params.idRoomSong;
+
+        const condition = {
+          _id: mongoose.Types.ObjectId(idRoomSong)
+        }
+
+        roomSongModel.findOneAndUpdate(condition, { $set: newData }, { new: true })
+          .exec((err, new_data) => {
+            if (err) {
+              return res.json({
+                status: "failed",
+                message: `We have few error: ${err}`
+              })
+            } else {
+              return res.json({
+                status: "successfully",
+                data: [new_data],
+                message: `You were update successfully`
+              })
+
+            }
+          })
+      } else {
+        return res.json({
+          status: statusF,
+          data: [],
+          message: "Bài hát hoặc Phòng không tồn tại, Song or Room does not exist."
+        });
+      }
     } catch (error) {
       return res.json({
         status: statusF,

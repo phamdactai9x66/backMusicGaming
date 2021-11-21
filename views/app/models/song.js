@@ -29,7 +29,7 @@ const song = new Schema({
     },
     id_album: {
         type: Schema.ObjectId
-    },
+    }
 }, {
     timestamps: true
 })
