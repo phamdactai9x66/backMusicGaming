@@ -203,7 +203,7 @@ const signFacebook = async (req, res, next) => {
 const checkLogin = async (req, res, next) => {
 
     try {
-        let get_token = req.params.tokenUser;
+        let get_token = req.headers.Authorization;
 
         let cecode_token = decode_jwt(get_token, process.env.JWT_SECRET);
         const find_user = await modelUser.findOne({ _id: cecode_token.sub })
