@@ -3,12 +3,13 @@ var express = require('express')
 var router = express.Router()
 
 const artist_Controller = require("../app/controllers/artistControllers");
+const { checkLogin, checkAuthe } = require('../app/validator/methodCommon');
 
-router.post("/add", artist_Controller.createArtist);
+router.post("/add", checkLogin, checkAuthe(1), artist_Controller.createArtist);
 
-router.put("/:idArtist/update", artist_Controller.editArtist);
+router.put("/:idArtist/update", checkLogin, checkAuthe(1), artist_Controller.editArtist);
 
-router.delete("/:idArtist/delete", artist_Controller.deleteArtist)
+router.delete("/:idArtist/delete", checkLogin, checkAuthe(1), artist_Controller.deleteArtist)
 
 router.get("/:idArtist", artist_Controller.getOne);
 

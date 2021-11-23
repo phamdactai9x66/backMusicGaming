@@ -12,11 +12,11 @@ router.post("/signUp", checkConfirmPass, user_Controller.signUp);
 
 router.post("/login", getFormInput(), check_hash, user_Controller.login)
 
-router.delete("/:idUser/delete", user_Controller.deleteOne)
+router.delete("/:idUser/delete", checkLogin, checkAuthe(1), user_Controller.deleteOne)
 
-router.put("/:idUser/update/:tokenUser", checkLogin, checkAuthe(2), user_Controller.editUser)
+router.put("/:idUser/update", checkLogin, checkAuthe(), user_Controller.editUser)
 
-router.get("/:idUser", user_Controller.getOne);
+router.get("/:idUser", checkLogin, checkAuthe(), user_Controller.getOne);
 
-router.get("/", user_Controller.index);
+router.get("/", checkLogin, checkAuthe(1), user_Controller.index);
 module.exports = router;

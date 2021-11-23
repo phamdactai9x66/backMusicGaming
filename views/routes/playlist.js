@@ -3,6 +3,7 @@ var express = require('express')
 var router = express.Router()
 
 const playlist_Controller = require("../app/controllers/playlistControllers");
+const { checkLogin, checkAuthe } = require('../app/validator/methodCommon');
 
 
 // router.post("/", playlist_Controller.createPlaylist);
@@ -11,10 +12,10 @@ const playlist_Controller = require("../app/controllers/playlistControllers");
 router.get("/", playlist_Controller.index);
 router.get('/:id', playlist_Controller.getOnePlaylist);
 
-router.post('/add', playlist_Controller.addNewPlayList);
+router.post('/add', checkLogin, checkAuthe(1), playlist_Controller.addNewPlayList);
 
-router.delete('/delete/:id', playlist_Controller.removePlayList);
+router.delete('/delete/:id', checkLogin, checkAuthe(1), playlist_Controller.removePlayList);
 
-router.put('/:id/update', playlist_Controller.updatePlayList);
+router.put('/:id/update', checkLogin, checkAuthe(1), playlist_Controller.updatePlayList);
 
 module.exports = router;
