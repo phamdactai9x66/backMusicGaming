@@ -9,10 +9,10 @@ router.get("/", slide_Controller.index);
 
 router.get("/:idSlide", slide_Controller.getOne);
 
-router.post("/add", checkLogin, checkAuthe(1), slide_Controller.createSlide);
+router.post("/add", checkLogin, checkAuthe(0), slide_Controller.createSlide);
 
-router.put("/:idSlide/update", checkLogin, checkAuthe(1), slide_Controller.editSlide);
+router.put("/:idSlide/update", checkLogin, checkAuthe(0), slide_Controller.editSlide);
 
-router.delete("/:idSlide/delete", checkLogin, checkAuthe(1), slide_Controller.deleteSlide);
+router.delete("/:idSlide/delete", checkLogin, checkAuthe(0), slide_Controller.deleteSlide);
 
 module.exports = router;

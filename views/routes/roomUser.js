@@ -12,7 +12,7 @@ router.put("/:idRoomUser/update", checkLogin, checkAuthe(), roomUserController.u
 
 router.delete("/:idRoomUser/delete", checkLogin, checkAuthe(), roomUserController.delete);
 
-router.get("/", checkLogin, checkAuthe(1), roomUserController.index);
+router.get("/", checkLogin, checkAuthe(), roomUserController.index);
 
 
 module.exports = router;

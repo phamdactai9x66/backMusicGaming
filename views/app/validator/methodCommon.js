@@ -235,8 +235,8 @@ const checkAuthe = (input_role = 0) => {
         } else {
             res.json({
                 status: statusF,
-                data: [],
-                message: `Rất tiếc, bạn không đủ quyền để thực hiện chức năng này!`
+                data: { currentRole: role.role },
+                message: `Rất tiếc, bạn không đủ quyền để thực hiện chức năng này!:`
                 // message: `We don't permission you do that, because your role have to ${input_role}!`
             })
         }

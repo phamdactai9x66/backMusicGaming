@@ -12,10 +12,10 @@ const { checkLogin, checkAuthe } = require('../app/validator/methodCommon');
 router.get("/", playlist_Controller.index);
 router.get('/:id', playlist_Controller.getOnePlaylist);
 
-router.post('/add', checkLogin, checkAuthe(1), playlist_Controller.addNewPlayList);
+router.post('/add', checkLogin, checkAuthe(0), playlist_Controller.addNewPlayList);
 
-router.delete('/delete/:id', checkLogin, checkAuthe(1), playlist_Controller.removePlayList);
+router.delete('/delete/:id', checkLogin, checkAuthe(0), playlist_Controller.removePlayList);
 
-router.put('/:id/update', checkLogin, checkAuthe(1), playlist_Controller.updatePlayList);
+router.put('/:id/update', checkLogin, checkAuthe(0), playlist_Controller.updatePlayList);
 
 module.exports = router;

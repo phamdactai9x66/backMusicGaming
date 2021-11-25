@@ -4,13 +4,13 @@ const { checkLogin, checkAuthe } = require("../app/validator/methodCommon");
 
 var router = express.Router();
 
-router.post("/add", checkLogin, checkAuthe(1), playlistSong_Controller.createPlaylistSong);
+router.post("/add", checkLogin, checkAuthe(0), playlistSong_Controller.createPlaylistSong);
 
 router.get("/:idPlaylistSong", playlistSong_Controller.getOne);
 
-router.put("/:idPlaylistSong/update", checkLogin, checkAuthe(1), playlistSong_Controller.updatePlaylistSong);
+router.put("/:idPlaylistSong/update", checkLogin, checkAuthe(0), playlistSong_Controller.updatePlaylistSong);
 
-router.delete("/:idPlaylistSong/delete", checkLogin, checkAuthe(1), playlistSong_Controller.delete);
+router.delete("/:idPlaylistSong/delete", checkLogin, checkAuthe(0), playlistSong_Controller.delete);
 
 router.get("/", playlistSong_Controller.index);
 

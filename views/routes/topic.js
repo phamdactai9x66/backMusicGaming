@@ -6,11 +6,11 @@ const topic_Controller = require("../app/controllers/topicControllers");
 const { checkLogin, checkAuthe } = require('../app/validator/methodCommon');
 
 
-router.put("/:idTopic/update", checkLogin, checkAuthe(1), topic_Controller.updateTopic);
+router.put("/:idTopic/update", checkLogin, checkAuthe(0), topic_Controller.updateTopic);
 
-router.delete("/:idTopic/delete", checkLogin, checkAuthe(1), topic_Controller.deleteTopic)
+router.delete("/:idTopic/delete", checkLogin, checkAuthe(0), topic_Controller.deleteTopic)
 
-router.post('/add', checkLogin, checkAuthe(1), topic_Controller.addNewTopic)
+router.post('/add', checkLogin, checkAuthe(0), topic_Controller.addNewTopic)
 
 router.get("/:idTopic", topic_Controller.getOne);
 

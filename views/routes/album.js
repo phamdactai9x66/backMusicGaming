@@ -9,11 +9,11 @@ router.get('/', album_Controller.index);
 router.get('/:idAlbum', album_Controller.getOne);
 // router.get('/:idArtist/artist', album_Controller.getAlbumByArtist)
 
-router.post('/add', checkLogin, checkAuthe(1), album_Controller.createAlbum);
+router.post('/add', checkLogin, checkAuthe(0), album_Controller.createAlbum);
 
-router.delete('/:idAlbum/delete', checkLogin, checkAuthe(1), album_Controller.deleteAlbum);
+router.delete('/:idAlbum/delete', checkLogin, checkAuthe(0), album_Controller.deleteAlbum);
 
-router.put('/:idAlbum/update', checkLogin, checkAuthe(1), album_Controller.editAlbum)
+router.put('/:idAlbum/update', checkLogin, checkAuthe(0), album_Controller.editAlbum)
 
 
 module.exports = router;

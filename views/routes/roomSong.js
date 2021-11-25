@@ -12,7 +12,7 @@ router.put("/:idRoomSong/update", checkLogin, checkAuthe(), roomSongController.u
 
 router.delete("/:idRoomSong/delete", checkLogin, checkAuthe(), roomSongController.delete);
 
-router.get("/", checkLogin, checkAuthe(1), roomSongController.index);
+router.get("/", checkLogin, checkAuthe(), roomSongController.index);
 
 
 module.exports = router;
