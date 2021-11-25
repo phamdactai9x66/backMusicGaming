@@ -1,17 +1,18 @@
 var express = require("express");
 const roomSongController = require("../app/controllers/roomSongController");
+const { checkLogin, checkAuthe } = require("../app/validator/methodCommon");
 
 var router = express.Router();
 
-router.post("/add", roomSongController.create);
+router.post("/add", checkLogin, checkAuthe(), roomSongController.create);
 
-router.get("/:idRoomSong", roomSongController.getOne);
+router.get("/:idRoomSong", checkLogin, checkAuthe(), roomSongController.getOne);
 
-router.put("/:idRoomSong/update", roomSongController.update);
+router.put("/:idRoomSong/update", checkLogin, checkAuthe(), roomSongController.update);
 
-router.delete("/:idRoomSong/delete", roomSongController.delete);
+router.delete("/:idRoomSong/delete", checkLogin, checkAuthe(), roomSongController.delete);
 
-router.get("/", roomSongController.index);
+router.get("/", checkLogin, checkAuthe(1), roomSongController.index);
 
 
 module.exports = router;

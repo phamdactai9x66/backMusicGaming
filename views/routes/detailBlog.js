@@ -3,12 +3,13 @@ var express = require('express')
 var router = express.Router()
 
 const detailBlog_Controller = require("../app/controllers/detailBlogController");
+const { checkLogin, checkAuthe } = require('../app/validator/methodCommon');
 
-router.post("/add", detailBlog_Controller.create);
+router.post("/add", checkLogin, checkAuthe(1), detailBlog_Controller.create);
 
-router.put("/:idDetailBlog/update", detailBlog_Controller.edit);
+router.put("/:idDetailBlog/update", checkLogin, checkAuthe(1), detailBlog_Controller.edit);
 
-router.delete("/:idDetailBlog/delete", detailBlog_Controller.delete)
+router.delete("/:idDetailBlog/delete", checkLogin, checkAuthe(1), detailBlog_Controller.delete)
 
 router.get("/:idDetailBlog", detailBlog_Controller.getOne);
 

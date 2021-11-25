@@ -213,7 +213,7 @@ const checkLogin = async (req, res, next) => {
             // res.status(401).json("We can't found your account!");
             res.json({
                 status: statusF,
-                message: "We can't found your account!",
+                message: "Không thể tìm thấy tài khoản của bạn!",
                 data: []
             })
 
@@ -222,9 +222,8 @@ const checkLogin = async (req, res, next) => {
         console.log(error);
         res.json({
             status: statusF,
-            message: "The process authentication been failed."
+            message: "Xác minh thất bại."
         })
-
     }
 }
 const checkAuthe = (input_role = 0) => {
@@ -237,7 +236,8 @@ const checkAuthe = (input_role = 0) => {
             res.json({
                 status: statusF,
                 data: [],
-                message: `We don't permission you do that, because your role have to ${input_role}!`
+                message: `Rất tiếc, bạn không đủ quyền để thực hiện chức năng này!`
+                // message: `We don't permission you do that, because your role have to ${input_role}!`
             })
         }
 
