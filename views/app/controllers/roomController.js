@@ -1,4 +1,5 @@
 const modelRoom = require("../models/room");
+const modelRoomUser = require("../models/roomUser");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -109,7 +110,16 @@ class room {
     async enterRoom(req, res) {
         let { password, idRoom } = req.body;
         const find_Room = await modelRoom.findById(idRoom)
+
         if (find_Room != null) {
+            const checkLimit = await modelRoomUser.find({ id_Room: find_Room._id })
+            if (checkLimit.length >= find_Room.limit_User) {
+                return res.json({
+                    status: statusF,
+                    message: "You can't join because this room was full."
+                })
+            }
+
             const check_compar_pass = await bcrypt.compare(password, find_Room.password);
             if (check_compar_pass) {
                 return res.json({
