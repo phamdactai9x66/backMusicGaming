@@ -30,6 +30,10 @@ io.on("connection", (socket) => {
 
     io.emit('joined', Date.now())
   })
+  socket.on("newSongRoom", async (dataResponse) => {
+
+    io.emit('deliverSong', Date.now())
+  })
 })
 
 

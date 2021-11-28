@@ -73,7 +73,7 @@ class room {
 
         const getRooms = await modelRoom.find();
 
-        if (name_Room && password && limit_User) {
+        if (name_Room) {
             const findName = getRooms.find(currenUser => (currenUser.name_Room === name_Room))
             if (findName) {
                 return res.json({
