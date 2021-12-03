@@ -5,6 +5,8 @@ const path = require("path");
 const { statusF, statusS, localhost, extensionImage } = require("../validator/variableCommon");
 const { encode_jwt, decode_jwt } = require("../validator/methodCommon");
 let formidable = require("formidable")
+const { sendMeailer } = require("../validator/methodCommon");
+const bcrypt = require("bcrypt");
 class user {
     async index(req, res, next) {
         const { _limit, _page } = req.query;
@@ -159,6 +161,38 @@ class user {
                     user: user
                 })
             }, 1000);
+        }
+    }
+    async checkAccount(req, res) {
+        try {
+            let email = req.body;
+            let find_user = await modelUser.findOne(email).select({});
+
+
+            if (find_user) {
+                let code = (Math.random()).toString().split(".")[1].slice(0, 6);
+                let create_genSalt = await bcrypt.genSalt(10);
+
+                let hash_code = await bcrypt.hash(code, create_genSalt);
+                sendMeailer(req.body.email, code);
+                res.json({
+                    status: statusS,
+                    hash_code,
+                    message: "We were sended a code to this email."
+                })
+            } else {
+                res.json({
+                    status: statusF,
+                    message: "user not exist"
+                })
+            }
+
+        } catch (error) {
+            console.log(error);
+            res.json({
+                status: statusF,
+                message: error
+            })
         }
     }
     deleteOne(req, res) {

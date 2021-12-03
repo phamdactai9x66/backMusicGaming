@@ -53,7 +53,7 @@ class playlistSong {
     })
   }
   async createPlaylistSong(req, res) {
-
+    console.log(req.body)
     let { id_PlayList: idPl, id_Songs: idS } = req.body;
     if (!idPl || !idS) {
       return res.json({
@@ -63,13 +63,13 @@ class playlistSong {
       })
     }
     let findPlaylist = await modelPlaylistSong.find({
-      id_PlayList: mongoose.Types.ObjectId(idPl),
-      id_Songs: mongoose.Types.ObjectId(idS)
+      id_PlayList: idPl,
+      id_Songs: idS
     })
     if (!findPlaylist.length) {
       let dataPlaylistSong = {
-        id_PlayList: mongoose.Types.ObjectId(idPl),
-        id_Songs: mongoose.Types.ObjectId(idS),
+        id_PlayList: idPl,
+        id_Songs: idS,
       }
 
       let createPlaylistSong = new modelPlaylistSong(dataPlaylistSong)
@@ -97,6 +97,7 @@ class playlistSong {
     }
   }
   async updatePlaylistSong(req, res) {
+    console.log(req.body)
     let { id_PlayList: idPl, id_Songs: idS } = req.body;
     if (!idPl || !idS) {
       return res.json({
@@ -106,13 +107,13 @@ class playlistSong {
       })
     }
     let dataPlaylistSong = {
-      id_PlayList: mongoose.Types.ObjectId(idPl),
-      id_Songs: mongoose.Types.ObjectId(idS),
+      id_PlayList: idPl,
+      id_Songs: idS,
     }
 
     let { idPlaylistSong } = req.params;
     const condition = {
-      _id: mongoose.Types.ObjectId(idPlaylistSong)
+      _id: idPlaylistSong
     }
 
     modelPlaylistSong.findOneAndUpdate(condition, { $set: dataPlaylistSong }, { new: true })

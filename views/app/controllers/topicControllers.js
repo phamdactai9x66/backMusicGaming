@@ -185,7 +185,7 @@ class topics {
             };
 
             const uploadFile = files["image"];
-            const indexOfPath = uploadFile.path.indexOf("upload");
+            const indexOfPath = uploadFile.path.indexOf("uploads");
             const cutPath = uploadFile.path.slice(indexOfPath);
 
             const checkImage = cutPath.split(".")[1];

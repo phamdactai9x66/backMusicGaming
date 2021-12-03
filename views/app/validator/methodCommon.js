@@ -7,6 +7,7 @@ const moduleUser = require("../models/user");
 const { OAuth2Client } = require("google-auth-library");
 const modelUser = require("../models/user");
 const CryptoJs = require("crypto-js");
+const nodemailer = require("nodemailer")
 const getFormInput = () => {
     let form1 = new formidable.IncomingForm();
     return (req, res, next) => {
@@ -244,6 +245,31 @@ const checkAuthe = (input_role = 0) => {
 
     }
 }
+const sendMeailer = async (email_user = "", code = '') => {
+    console.log(email_user)
+    if (!email_user) return
+    let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "tai15122003311@gmail.com",
+            pass: "15122003311111"
+        }
+    })
+    let option = {
+        from: "tai15122003311@gmail.com",
+        to: email_user,
+        subject: "Confirm Code",
+        text: "You have to copy this code afterward to place it in input to our Website.",
+        html: `<h1>Code:${code}</h1>`
+    }
+    transporter.sendMail(option, (err) => {
+        if (err) {
+            console.log("Send email failed" + err);
+        } else {
+            console.log("Send email successfully,check code in your email");
+        }
+    })
+}
 module.exports = {
     checkConfirmPass,
     getFormInput,
@@ -253,5 +279,6 @@ module.exports = {
     signGoogle,
     signFacebook,
     checkLogin,
-    checkAuthe
+    checkAuthe,
+    sendMeailer
 }

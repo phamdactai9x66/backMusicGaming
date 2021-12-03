@@ -118,7 +118,7 @@ class playlist {
 
         const uploadFile = files["image"];
 
-        const indexOfPath = uploadFile.path.indexOf("upload");
+        const indexOfPath = uploadFile.path.indexOf("uploads");
         const cutPath = uploadFile.path.slice(indexOfPath);
 
         const checkImage = cutPath.split(".")[1];
@@ -224,7 +224,7 @@ class playlist {
       };
 
       const uploadFile = files["image"];
-      const indexOfPath = uploadFile.path.indexOf("upload");
+      const indexOfPath = uploadFile.path.indexOf("uploads");
       const cutPath = uploadFile.path.slice(indexOfPath);
 
       const checkImage = cutPath.split(".")[1];

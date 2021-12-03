@@ -106,7 +106,7 @@ class blogController {
 
         const uploadFile = files["image"];
 
-        const indexOfPath = uploadFile.path.indexOf("upload");
+        const indexOfPath = uploadFile.path.indexOf("uploads");
         const cutPath = uploadFile.path.slice(indexOfPath);
 
         const checkImage = cutPath.split(".")[1];
@@ -206,7 +206,7 @@ class blogController {
         let data = {};
         const uploadFile = files["image"];
         if (uploadFile) {
-          const indexOfPath = uploadFile.path.indexOf("upload");
+          const indexOfPath = uploadFile.path.indexOf("uploads");
           const cutPath = uploadFile.path.slice(indexOfPath);
 
           const checkImage = cutPath.split(".")[1];

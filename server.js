@@ -34,6 +34,12 @@ io.on("connection", (socket) => {
 
     io.emit('deliverSong', Date.now())
   })
+  socket.on("pauseSong", async (dataResponse) => {
+    io.emit('pauseSongUser', dataResponse)
+  })
+  socket.on("playSong", async (dataResponse) => {
+    io.emit('playSongUser', dataResponse)
+  })
 })
 
 
