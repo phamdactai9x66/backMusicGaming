@@ -202,5 +202,25 @@ class artist {
                 }
             })
     }
+    checkpass(req, res) {
+        let condition = {
+          _id: mongoose.Types.ObjectId(req.params.idArtist),
+        };
+        modelArtist.findOneAndUpdate(condition, {passed: true}, {new:true})
+        .exec((err, newData) => {
+          if (err) {
+            return res.json({
+              status: statusF,
+              data: [],
+              message: "Update artist failed",
+            });
+          }
+          res.json({
+            status: statusS,
+            data: newData,
+            message: "Update artist successfully.",
+          });
+        })
+      }
 }
 module.exports = new artist;
