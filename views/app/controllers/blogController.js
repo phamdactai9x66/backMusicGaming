@@ -277,5 +277,25 @@ class blogController {
       })
     })
   }
+  checkpass(req, res) {
+    let condition = {
+      _id: mongoose.Types.ObjectId(req.params.id_blog),
+    };
+    modelBlog.findOneAndUpdate(condition, {passed: true}, {new:true})
+    .exec((err, newData) => {
+      if (err) {
+        return res.json({
+          status: statusF,
+          data: [],
+          message: "Update blog failed",
+        });
+      }
+      res.json({
+        status: statusS,
+        data: newData,
+        message: "Update blog successfully.",
+      });
+    })
+  }
 }
 module.exports = new blogController();

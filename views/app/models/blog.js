@@ -31,6 +31,10 @@ const Blog = new Schema({
     },
     link_Video: {
         type: String, trim: true, default: ''
+    },
+    passed: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

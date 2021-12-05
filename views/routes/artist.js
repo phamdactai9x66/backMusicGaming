@@ -9,6 +9,8 @@ router.post("/add", checkLogin, checkAuthe(0), artist_Controller.createArtist);
 
 router.put("/:idArtist/update", checkLogin, checkAuthe(0), artist_Controller.editArtist);
 
+router.put("/:idArtist/pass", checkLogin, checkAuthe(0), artist_Controller.checkpass);
+
 router.delete("/:idArtist/delete", checkLogin, checkAuthe(0), artist_Controller.deleteArtist)
 
 router.get("/:idArtist", artist_Controller.getOne);

@@ -12,6 +12,8 @@ router.delete("/:idsong/delete", checkLogin, checkAuthe(0), song_Controller.dele
 
 router.put("/:idsong/update", checkLogin, checkAuthe(0), song_Controller.editSong)
 
+router.put("/:idsong/pass", checkLogin, checkAuthe(0), song_Controller.checkpass)
+
 router.get("/:idsong", song_Controller.getOne)
 router.get("/", song_Controller.index);
 module.exports = router;
