@@ -11,12 +11,14 @@ class songsArtist {
     }
     if (id_Songs) {
       condition = {
-        ...condition, ...res.query, id_Songs: mongoose.Types.ObjectId(id_Songs)
+        ...condition, ...req.query, id_Songs: mongoose.Types.ObjectId(id_Songs)
       }
     }
     condition = {
-      ...condition, ...res.query
+      ...condition, ...req.query
     }
+    // console.log(condition)
+    // console.log('querry: ', req.)
     songsArtistModel.find(condition).exec((err, data) => {
       if (err) {
         return res.json({
