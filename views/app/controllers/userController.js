@@ -320,7 +320,7 @@ class user {
         })
     }
     verifyUser(req, res) {
-        
+
     }
 }
 module.exports = new user;

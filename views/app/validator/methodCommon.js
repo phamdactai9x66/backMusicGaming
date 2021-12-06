@@ -107,6 +107,18 @@ const check_hash = async (req, res, next) => {
         })
     }
 }
+
+const checkActive = (req, res, next) => {
+    let { active } = req.body;
+    if (active == true){
+        return next()
+    }else {
+        return res.json({
+            status: statusF,
+            message: "Your account not activated!"
+        })
+    }
+}
 const encode_jwt = (idUser) => {
     return jwt.sign({
         iss: "Pham dac tai",
@@ -275,6 +287,7 @@ const sendMailer = async (email_user = "", code = '') => {
 const checkHashActiveUser = () => {
 
 }
+
 module.exports = {
     checkConfirmPass,
     getFormInput,
@@ -286,5 +299,6 @@ module.exports = {
     checkLogin,
     checkAuthe,
     sendMailer,
-    checkHashActiveUser
+    checkHashActiveUser,
+    checkActive
 }
