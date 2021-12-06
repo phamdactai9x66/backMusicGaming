@@ -126,6 +126,12 @@ class user {
             // req.body.avatar = `${localhost}/${cut_path}`;
 
             delete req.body.confirmPassWord;
+
+            let code = (Math.random()).toString().split(".")[1].slice(0, 6);
+            let create_genSalt = await bcrypt.genSalt(10);
+
+            let hash_code = await bcrypt.hash(code, create_genSalt);
+
             let create_user = new modelUser({ ...req.body })
 
             create_user.save(async (err, user_Data) => {
@@ -135,15 +141,10 @@ class user {
                         message: err
                     })
                 } else {
-                    let code = (Math.random()).toString().split(".")[1].slice(0, 6);
-                    let create_genSalt = await bcrypt.genSalt(10);
-
-                    let hash_code = await bcrypt.hash(code, create_genSalt);
                     sendMailer(user_Data.email, code)
                     res.json({
                         status: statusS,
                         data: user_Data,
-                        hash_code,
                         message: "sign up successfully"
                     })
 
@@ -308,15 +309,18 @@ class user {
             return res.json({
               status: statusF,
               data: [],
-              message: "Update blog failed",
+              message: "Update user failed",
             });
           }
           res.json({
             status: statusS,
             data: newData,
-            message: "Update blog successfully.",
+            message: "Update user successfully.",
           });
         })
-      }
+    }
+    verifyUser(req, res) {
+        
+    }
 }
 module.exports = new user;

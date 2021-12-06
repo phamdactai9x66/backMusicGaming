@@ -272,7 +272,7 @@ const sendMailer = async (email_user = "", code = '') => {
         }
     })
 }
-const activeCodeUser = () => {
+const checkHashActiveUser = () => {
 
 }
 module.exports = {
@@ -286,5 +286,5 @@ module.exports = {
     checkLogin,
     checkAuthe,
     sendMailer,
-    activeCodeUser
+    checkHashActiveUser
 }
