@@ -5,8 +5,9 @@ const path = require("path");
 const { statusF, statusS, localhost, extensionImage } = require("../validator/variableCommon");
 const { encode_jwt, decode_jwt } = require("../validator/methodCommon");
 let formidable = require("formidable")
-const { sendMeailer } = require("../validator/methodCommon");
+const { sendMailer } = require("../validator/methodCommon");
 const bcrypt = require("bcrypt");
+
 class user {
     async index(req, res, next) {
         const { _limit, _page } = req.query;
@@ -94,10 +95,10 @@ class user {
 
         const getUsers = await modelUser.find();
         if (first_name && last_name && email && userName && passWord && confirmPassWord) {
-            let find_index_path = form1.path.indexOf("imageUser");
-            let cut_path = form1.path.slice(find_index_path);
+            // let find_index_path = form1.path.indexOf("imageUser");
+            // let cut_path = form1.path.slice(find_index_path);
 
-            let getExtension = cut_path.split(".")[1];
+            // let getExtension = cut_path.split(".")[1];
             const findUSer = getUsers.find(currenUser => (currenUser.userName === userName))
             if (findUSer) {
                 return res.json({
@@ -112,30 +113,37 @@ class user {
                     message: 'this email been exist!'
                 })
             }
-            if (getExtension) {
-                if (!extensionImage.includes(getExtension.toLowerCase())) {
-                    return res.json({
-                        status: statusF,
-                        data: [],
-                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
-                    })
-                }
-            }
+            // if (getExtension) {
+            //     if (!extensionImage.includes(getExtension.toLowerCase())) {
+            //         return res.json({
+            //             status: statusF,
+            //             data: [],
+            //             message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+            //         })
+            //     }
+            // }
 
-            req.body.avatar = `${localhost}/${cut_path}`;
+            // req.body.avatar = `${localhost}/${cut_path}`;
+
             delete req.body.confirmPassWord;
             let create_user = new modelUser({ ...req.body })
 
-            create_user.save((err, user_Data) => {
+            create_user.save(async (err, user_Data) => {
                 if (err) {
                     res.json({
                         status: statusF,
                         message: err
                     })
                 } else {
+                    let code = (Math.random()).toString().split(".")[1].slice(0, 6);
+                    let create_genSalt = await bcrypt.genSalt(10);
+
+                    let hash_code = await bcrypt.hash(code, create_genSalt);
+                    sendMailer(user_Data.email, code)
                     res.json({
                         status: statusS,
                         data: user_Data,
+                        hash_code,
                         message: "sign up successfully"
                     })
 
@@ -174,7 +182,7 @@ class user {
                 let create_genSalt = await bcrypt.genSalt(10);
 
                 let hash_code = await bcrypt.hash(code, create_genSalt);
-                sendMeailer(req.body.email, code);
+                sendMailer(req.body.email, code);
                 res.json({
                     status: statusS,
                     hash_code,

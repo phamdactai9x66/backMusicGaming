@@ -8,6 +8,8 @@ const { OAuth2Client } = require("google-auth-library");
 const modelUser = require("../models/user");
 const CryptoJs = require("crypto-js");
 const nodemailer = require("nodemailer")
+require('dotenv').config();
+
 const getFormInput = () => {
     let form1 = new formidable.IncomingForm();
     return (req, res, next) => {
@@ -245,18 +247,18 @@ const checkAuthe = (input_role = 0) => {
 
     }
 }
-const sendMeailer = async (email_user = "", code = '') => {
+const sendMailer = async (email_user = "", code = '') => {
     console.log(email_user)
     if (!email_user) return
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "tai15122003311@gmail.com",
-            pass: "15122003311111"
+            user: "duong.phamduc.0205@gmail.com",
+            pass: "xbveafbrrvtewkgw"
         }
     })
     let option = {
-        from: "tai15122003311@gmail.com",
+        from: "MusicGaming",
         to: email_user,
         subject: "Confirm Code",
         text: "You have to copy this code afterward to place it in input to our Website.",
@@ -266,9 +268,12 @@ const sendMeailer = async (email_user = "", code = '') => {
         if (err) {
             console.log("Send email failed" + err);
         } else {
-            console.log("Send email successfully,check code in your email");
+            console.log("Send email successfully, check code in your email");
         }
     })
+}
+const activeCodeUser = () => {
+
 }
 module.exports = {
     checkConfirmPass,
@@ -280,5 +285,6 @@ module.exports = {
     signFacebook,
     checkLogin,
     checkAuthe,
-    sendMeailer
+    sendMailer,
+    activeCodeUser
 }
