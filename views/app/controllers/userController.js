@@ -317,7 +317,33 @@ class user {
     verifyUser(req, res) {
         let {idUser,hash} = req.params;
 
-        console.log(idUser,hash)
+        // console.log(idUser,hash)
+
+        let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
+
+        if(idUser == decodeTokenEmail.sub){
+            modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, {active: true}, {new: true})
+            .exec((err, newData) => {
+                if (err) {
+                  return res.json({
+                    status: statusF,
+                    data: [],
+                    message: "Active user failed",
+                  });
+                }
+                res.json({
+                  status: statusS,
+                  data: newData,
+                  message: "Active user successfully.",
+                });
+              })
+        }else{
+            res.json({
+                status: statusF,
+                data: [],
+                message: "Something is wrong.",
+              });
+        }
     }
 }
 module.exports = new user;

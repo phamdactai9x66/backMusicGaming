@@ -286,9 +286,7 @@ const sendMailer = async (userData) => {
         }
     })
 }
-const checkHashActiveUser = () => {
 
-}
 
 module.exports = {
     checkConfirmPass,
@@ -301,6 +299,5 @@ module.exports = {
     checkLogin,
     checkAuthe,
     sendMailer,
-    checkHashActiveUser,
     checkActive
 }
