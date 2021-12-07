@@ -8,6 +8,8 @@ const { OAuth2Client } = require("google-auth-library");
 const modelUser = require("../models/user");
 const CryptoJs = require("crypto-js");
 const nodemailer = require("nodemailer")
+require('dotenv').config();
+
 const getFormInput = () => {
     let form1 = new formidable.IncomingForm();
     return (req, res, next) => {
@@ -88,13 +90,13 @@ const check_hash = async (req, res, next) => {
             } else {
                 return res.json({
                     status: statusF,
-                    message: "password not match"
+                    message: "Password not match"
                 })
             }
         } else {
             return res.json({
                 status: statusF,
-                message: "userName been wrong"
+                message: "UserName been wrong"
             })
         }
 
@@ -102,6 +104,19 @@ const check_hash = async (req, res, next) => {
         return res.json({
             status: statusF,
             message: "We don't allow username or password is blank !"
+        })
+    }
+}
+
+const checkActive = (req, res, next) => {
+    let { active } = res.locals.user;
+    if (active == true){
+        res.locals.user = res.locals.user
+        return next()
+    }else {
+        return res.json({
+            status: statusF,
+            message: "Your account not activated, Please check your email!"
         })
     }
 }
@@ -245,31 +260,34 @@ const checkAuthe = (input_role = 0) => {
 
     }
 }
-const sendMeailer = async (email_user = "", code = '') => {
-    console.log(email_user)
-    if (!email_user) return
+const sendMailer = async (userData) => {
+
+    if (!userData.email) return
+    let hash = encode_jwt(userData._id);
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "tai15122003311@gmail.com",
-            pass: "15122003311111"
+            user: "duong.phamduc.0205@gmail.com",
+            pass: "xbveafbrrvtewkgw"
         }
     })
     let option = {
-        from: "tai15122003311@gmail.com",
-        to: email_user,
+        from: "MusicGaming",
+        to: userData.email,
         subject: "Confirm Code",
         text: "You have to copy this code afterward to place it in input to our Website.",
-        html: `<h1>Code:${code}</h1>`
+        html: `<h1>Link: <a href='http://localhost:3000/verify/${userData._id}/${hash}' target="_">Click here to active</a></h1>`
     }
     transporter.sendMail(option, (err) => {
         if (err) {
             console.log("Send email failed" + err);
         } else {
-            console.log("Send email successfully,check code in your email");
+            console.log("Send email successfully, check code in your email");
         }
     })
 }
+
+
 module.exports = {
     checkConfirmPass,
     getFormInput,
@@ -280,5 +298,6 @@ module.exports = {
     signFacebook,
     checkLogin,
     checkAuthe,
-    sendMeailer
+    sendMailer,
+    checkActive
 }
