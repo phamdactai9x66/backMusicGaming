@@ -90,13 +90,13 @@ const check_hash = async (req, res, next) => {
             } else {
                 return res.json({
                     status: statusF,
-                    message: "password not match"
+                    message: "Password not match"
                 })
             }
         } else {
             return res.json({
                 status: statusF,
-                message: "userName been wrong"
+                message: "UserName been wrong"
             })
         }
 
@@ -109,13 +109,14 @@ const check_hash = async (req, res, next) => {
 }
 
 const checkActive = (req, res, next) => {
-    let { active } = req.body;
+    let { active } = res.locals.user;
     if (active == true){
+        res.locals.user = res.locals.user
         return next()
     }else {
         return res.json({
             status: statusF,
-            message: "Your account not activated!"
+            message: "Your account not activated, Please check your email!"
         })
     }
 }
@@ -259,9 +260,10 @@ const checkAuthe = (input_role = 0) => {
 
     }
 }
-const sendMailer = async (email_user = "", code = '') => {
-    console.log(email_user)
-    if (!email_user) return
+const sendMailer = async (userData) => {
+
+    if (!userData.email) return
+    let hash = encode_jwt(userData._id);
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -271,10 +273,10 @@ const sendMailer = async (email_user = "", code = '') => {
     })
     let option = {
         from: "MusicGaming",
-        to: email_user,
+        to: userData.email,
         subject: "Confirm Code",
         text: "You have to copy this code afterward to place it in input to our Website.",
-        html: `<h1>Code:${code}</h1>`
+        html: `<h1>Link: <a href='http://localhost:3000/verify/${userData._id}/${hash}' target="_">Click here to active</a></h1>`
     }
     transporter.sendMail(option, (err) => {
         if (err) {

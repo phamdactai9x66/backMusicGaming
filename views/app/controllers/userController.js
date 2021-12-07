@@ -127,11 +127,6 @@ class user {
 
             delete req.body.confirmPassWord;
 
-            let code = (Math.random()).toString().split(".")[1].slice(0, 6);
-            let create_genSalt = await bcrypt.genSalt(10);
-
-            let hash_code = await bcrypt.hash(code, create_genSalt);
-
             let create_user = new modelUser({ ...req.body })
 
             create_user.save(async (err, user_Data) => {
@@ -141,11 +136,11 @@ class user {
                         message: err
                     })
                 } else {
-                    sendMailer(user_Data.email, code)
+                    sendMailer(user_Data)
                     res.json({
                         status: statusS,
                         data: user_Data,
-                        message: "sign up successfully"
+                        message: "Sign up successfully! Check your email to activate your account!"
                     })
 
                 }
@@ -179,11 +174,11 @@ class user {
 
 
             if (find_user) {
-                let code = (Math.random()).toString().split(".")[1].slice(0, 6);
-                let create_genSalt = await bcrypt.genSalt(10);
+                // let code = (Math.random()).toString().split(".")[1].slice(0, 6);
+                // let create_genSalt = await bcrypt.genSalt(10);
 
-                let hash_code = await bcrypt.hash(code, create_genSalt);
-                sendMailer(req.body.email, code);
+                // let hash_code = await bcrypt.hash(code, create_genSalt);
+                sendMailer(req.body);
                 res.json({
                     status: statusS,
                     hash_code,
@@ -320,7 +315,9 @@ class user {
         })
     }
     verifyUser(req, res) {
+        let {idUser,hash} = req.params;
 
+        console.log(idUser,hash)
     }
 }
 module.exports = new user;
