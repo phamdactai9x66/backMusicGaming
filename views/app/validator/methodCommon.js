@@ -287,6 +287,32 @@ const sendMailer = async (userData) => {
     })
 }
 
+const sendMailer2 = async (userData2) => {
+    console.log(userData2.email)
+    if (!userData2.email) return
+    let hash = encode_jwt(userData2._id);
+    let transporter2 = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "duong.phamduc.0205@gmail.com",
+            pass: "xbveafbrrvtewkgw"
+        }
+    })
+    let option2 = {
+        from: "MusicGaming",
+        to: userData2.email,
+        subject: "Reset password",
+        text: "You have to copy this code afterward to place it in input to our Website.",
+        html: `<h1>Link: <a href='http://localhost:3000/comfirm-password/${userData2._id}/${hash}' target="_">Click here to reset password</a></h1>`
+    }
+    transporter2.sendMail(option2, (err) => {
+        if (err) {
+            console.log("Send email failed" + err);
+        } else {
+            console.log("Send email successfully, check code in your email");
+        }
+    })
+}
 
 module.exports = {
     checkConfirmPass,
@@ -299,5 +325,6 @@ module.exports = {
     checkLogin,
     checkAuthe,
     sendMailer,
+    sendMailer2,
     checkActive
 }

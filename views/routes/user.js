@@ -13,7 +13,10 @@ router.post("/signUp", checkConfirmPass, user_Controller.signUp);
 router.get("/verifyUser/:idUser/:hash", user_Controller.verifyUser)
 
 router.post("/login", getFormInput(), check_hash, checkActive, user_Controller.login)
-router.post("/forgetPassword", user_Controller.checkAccount)
+
+router.post("/forgotPassword", user_Controller.checkAccount)
+
+router.put("/resetPassword/:idUser/:hash", user_Controller.resetPassword)
 
 router.delete("/:idUser/delete", checkLogin, checkAuthe(0), user_Controller.deleteOne)
 
