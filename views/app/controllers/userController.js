@@ -95,10 +95,10 @@ class user {
 
         const getUsers = await modelUser.find();
         if (first_name && last_name && email && userName && passWord && confirmPassWord) {
-            let find_index_path = form1.path.indexOf("imageUser");
-            let cut_path = form1.path.slice(find_index_path);
+            // let find_index_path = form1.path.indexOf("imageUser");
+            // let cut_path = form1.path.slice(find_index_path);
 
-            let getExtension = cut_path.split(".")[1];
+            // let getExtension = cut_path.split(".")[1];
             const findUSer = getUsers.find(currenUser => (currenUser.userName === userName))
             if (findUSer) {
                 return res.json({
@@ -113,17 +113,17 @@ class user {
                     message: 'this email been exist!'
                 })
             }
-            if (getExtension) {
-                if (!extensionImage.includes(getExtension.toLowerCase())) {
-                    return res.json({
-                        status: statusF,
-                        data: [],
-                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
-                    })
-                }
-            }
+            // if (getExtension) {
+            //     if (!extensionImage.includes(getExtension.toLowerCase())) {
+            //         return res.json({
+            //             status: statusF,
+            //             data: [],
+            //             message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+            //         })
+            //     }
+            // }
 
-            req.body.avatar = `${localhost}/${cut_path}`;
+            // req.body.avatar = `${localhost}/${cut_path}`;
 
             delete req.body.confirmPassWord;
 
