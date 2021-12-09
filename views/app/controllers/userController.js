@@ -5,7 +5,7 @@ const path = require("path");
 const { statusF, statusS, localhost, extensionImage } = require("../validator/variableCommon");
 const { encode_jwt, decode_jwt } = require("../validator/methodCommon");
 let formidable = require("formidable")
-const { sendMailer } = require("../validator/methodCommon");
+const { sendMailer, sendMailer2 } = require("../validator/methodCommon");
 const bcrypt = require("bcrypt");
 
 class user {
@@ -172,22 +172,20 @@ class user {
             let email = req.body;
             let find_user = await modelUser.findOne(email).select({});
 
-
             if (find_user) {
                 // let code = (Math.random()).toString().split(".")[1].slice(0, 6);
                 // let create_genSalt = await bcrypt.genSalt(10);
 
                 // let hash_code = await bcrypt.hash(code, create_genSalt);
-                sendMailer(req.body);
+                sendMailer2(find_user);
                 res.json({
                     status: statusS,
-                    hash_code,
-                    message: "We were sended a code to this email."
+                    message: "Chúng tôi đã gửi tới email của bạn đường link để đặt lại mật khẩu!"
                 })
             } else {
                 res.json({
                     status: statusF,
-                    message: "user not exist"
+                    message: "User not exist"
                 })
             }
 
@@ -197,6 +195,48 @@ class user {
                 status: statusF,
                 message: error
             })
+        }
+    }
+    async resetPassword(req, res){
+        let {idUser,hash} = req.params;
+        console.log(req.body)
+        let {passWord, confirmPassWord} = req.body;
+
+        let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
+        
+        if(idUser == decodeTokenEmail.sub){
+            if(passWord && confirmPassWord){
+                let general_sal = await bcrypt.genSalt(10);
+
+                let passWordHash = await bcrypt.hash(passWord, general_sal);
+                modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, {passWord: passWordHash}, {new: true})
+                .exec((err, newData) => {
+                    if (err) {
+                      return res.json({
+                        status: statusF,
+                        data: [],
+                        message: "Reset password failed",
+                      });
+                    }
+                    res.json({
+                      status: statusS,
+                      data: newData,
+                      message: "Reset password successfully.",
+                    });
+                  })
+            }else{
+                res.json({
+                    status: statusF,
+                    data: [],
+                    message: "Something is wrong.",
+                  });
+            }
+        }else{
+            res.json({
+                status: statusF,
+                data: [],
+                message: "Something is wrong.",
+              });
         }
     }
     deleteOne(req, res) {
@@ -316,9 +356,7 @@ class user {
     }
     verifyUser(req, res) {
         let {idUser,hash} = req.params;
-
         // console.log(idUser,hash)
-
         let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
 
         if(idUser == decodeTokenEmail.sub){

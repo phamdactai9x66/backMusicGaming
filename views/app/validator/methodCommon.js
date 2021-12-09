@@ -8,6 +8,8 @@ const { OAuth2Client } = require("google-auth-library");
 const modelUser = require("../models/user");
 const CryptoJs = require("crypto-js");
 const nodemailer = require("nodemailer")
+const {HtmlEmail1, HtmlEmail2} = require("./htmlEmail1");
+
 require('dotenv').config();
 
 const getFormInput = () => {
@@ -274,9 +276,9 @@ const sendMailer = async (userData) => {
     let option = {
         from: "MusicGaming",
         to: userData.email,
-        subject: "Confirm Code",
+        subject: "Kích hoạt tài khoản",
         text: "You have to copy this code afterward to place it in input to our Website.",
-        html: `<h1>Link: <a href='http://localhost:3000/verify/${userData._id}/${hash}' target="_">Click here to active</a></h1>`
+        html: HtmlEmail1(userData,hash),
     }
     transporter.sendMail(option, (err) => {
         if (err) {
@@ -287,6 +289,32 @@ const sendMailer = async (userData) => {
     })
 }
 
+const sendMailer2 = async (userData2) => {
+    console.log(userData2.email)
+    if (!userData2.email) return
+    let hash2 = encode_jwt(userData2._id);
+    let transporter2 = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "duong.phamduc.0205@gmail.com",
+            pass: "xbveafbrrvtewkgw"
+        }
+    })
+    let option2 = {
+        from: "MusicGaming",
+        to: userData2.email,
+        subject: "Đặt lại mật khẩu",
+        text: "You have to copy this code afterward to place it in input to our Website.",
+        html: HtmlEmail2(userData2,hash2),
+    }
+    transporter2.sendMail(option2, (err) => {
+        if (err) {
+            console.log("Send email failed" + err);
+        } else {
+            console.log("Send email successfully, check code in your email");
+        }
+    })
+}
 
 module.exports = {
     checkConfirmPass,
@@ -299,5 +327,6 @@ module.exports = {
     checkLogin,
     checkAuthe,
     sendMailer,
+    sendMailer2,
     checkActive
 }
