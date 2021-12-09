@@ -11,7 +11,11 @@ let bcrypt = require("bcrypt")
 class room {
     async index(req, res, next) {
         let { _page, _limit, name_Room, _id } = req.query;
-        modelRoom.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
+        let condition = {}
+        if (_id) {
+            condition = { _id }
+        }
+        modelRoom.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, data) => {
                 if (err || !data) {
                     return res.json({
@@ -33,10 +37,9 @@ class room {
                             message: "get data successfully"
                         })
                     } else if (_id) {
-                        let findId = data.find(currenT => currenT._id == _id);
                         return res.json({
                             status: statusS,
-                            data: findId ? findId : {},
+                            data: data[0],
                             message: "get data successfully"
                         })
                     }
@@ -124,6 +127,7 @@ class room {
             if (check_compar_pass) {
                 return res.json({
                     status: statusS,
+                    room: find_Room,
                     message: "Hey you was passed."
                 })
             } else {
