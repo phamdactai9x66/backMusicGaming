@@ -8,7 +8,7 @@ const { OAuth2Client } = require("google-auth-library");
 const modelUser = require("../models/user");
 const CryptoJs = require("crypto-js");
 const nodemailer = require("nodemailer")
-const {HtmlEmail1, HtmlEmail2} = require("./htmlEmail1");
+const { HtmlEmail1, HtmlEmail2 } = require("./htmlEmail1");
 
 require('dotenv').config();
 
@@ -34,7 +34,7 @@ const getFormInput = () => {
 }
 const checkConfirmPass = (req, res, next) => {
     let form1 = new formidable.IncomingForm();
-    form1.uploadDir = path.join(__dirname, "../../public/imageUser");
+    form1.uploadDir = path.join(__dirname, "../../public/uploads");
     form1.keepExtensions = true;
     form1.maxFieldsSize = 1 * 1024 * 1024;
     form1.multiples = false;
@@ -112,10 +112,10 @@ const check_hash = async (req, res, next) => {
 
 const checkActive = (req, res, next) => {
     let { active } = res.locals.user;
-    if (active == true){
+    if (active == true) {
         res.locals.user = res.locals.user
         return next()
-    }else {
+    } else {
         return res.json({
             status: statusF,
             message: "Your account not activated, Please check your email!"
@@ -294,7 +294,7 @@ const sendMailer = async (userData) => {
         to: userData.email,
         subject: "Kích hoạt tài khoản",
         text: "You have to copy this code afterward to place it in input to our Website.",
-        html: HtmlEmail1(userData,hash),
+        html: HtmlEmail1(userData, hash),
     }
     transporter.sendMail(option, (err) => {
         if (err) {
@@ -321,7 +321,7 @@ const sendMailer2 = async (userData2) => {
         to: userData2.email,
         subject: "Đặt lại mật khẩu",
         text: "You have to copy this code afterward to place it in input to our Website.",
-        html: HtmlEmail2(userData2,hash2),
+        html: HtmlEmail2(userData2, hash2),
     }
     transporter2.sendMail(option2, (err) => {
         if (err) {

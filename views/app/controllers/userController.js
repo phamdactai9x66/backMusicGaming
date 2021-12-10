@@ -95,10 +95,10 @@ class user {
 
         const getUsers = await modelUser.find();
         if (first_name && last_name && email && userName && passWord && confirmPassWord) {
-            // let find_index_path = form1.path.indexOf("imageUser");
-            // let cut_path = form1.path.slice(find_index_path);
+            let find_index_path = form1.path.indexOf("uploads");
+            let cut_path = form1.path.slice(find_index_path);
 
-            // let getExtension = cut_path.split(".")[1];
+            let getExtension = cut_path.split(".")[1];
             const findUSer = getUsers.find(currenUser => (currenUser.userName === userName))
             if (findUSer) {
                 return res.json({
@@ -113,17 +113,17 @@ class user {
                     message: 'this email been exist!'
                 })
             }
-            // if (getExtension) {
-            //     if (!extensionImage.includes(getExtension.toLowerCase())) {
-            //         return res.json({
-            //             status: statusF,
-            //             data: [],
-            //             message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
-            //         })
-            //     }
-            // }
+            if (getExtension) {
+                if (!extensionImage.includes(getExtension.toLowerCase())) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
+                    })
+                }
+            }
 
-            // req.body.avatar = `${localhost}/${cut_path}`;
+            req.body.avatar = `${localhost}/${cut_path}`;
 
             delete req.body.confirmPassWord;
 
@@ -173,10 +173,10 @@ class user {
             let find_user = await modelUser.findOne(email).select({});
 
             if (find_user) {
-                // let code = (Math.random()).toString().split(".")[1].slice(0, 6);
-                // let create_genSalt = await bcrypt.genSalt(10);
+                let code = (Math.random()).toString().split(".")[1].slice(0, 6);
+                let create_genSalt = await bcrypt.genSalt(10);
 
-                // let hash_code = await bcrypt.hash(code, create_genSalt);
+                let hash_code = await bcrypt.hash(code, create_genSalt);
                 sendMailer2(find_user);
                 res.json({
                     status: statusS,
@@ -197,46 +197,46 @@ class user {
             })
         }
     }
-    async resetPassword(req, res){
-        let {idUser,hash} = req.params;
+    async resetPassword(req, res) {
+        let { idUser, hash } = req.params;
         console.log(req.body)
-        let {passWord, confirmPassWord} = req.body;
+        let { passWord, confirmPassWord } = req.body;
 
         let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
-        
-        if(idUser == decodeTokenEmail.sub){
-            if(passWord && confirmPassWord){
+
+        if (idUser == decodeTokenEmail.sub) {
+            if (passWord && confirmPassWord) {
                 let general_sal = await bcrypt.genSalt(10);
 
                 let passWordHash = await bcrypt.hash(passWord, general_sal);
-                modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, {passWord: passWordHash}, {new: true})
-                .exec((err, newData) => {
-                    if (err) {
-                      return res.json({
-                        status: statusF,
-                        data: [],
-                        message: "Reset password failed",
-                      });
-                    }
-                    res.json({
-                      status: statusS,
-                      data: newData,
-                      message: "Reset password successfully.",
-                    });
-                  })
-            }else{
+                modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, { passWord: passWordHash }, { new: true })
+                    .exec((err, newData) => {
+                        if (err) {
+                            return res.json({
+                                status: statusF,
+                                data: [],
+                                message: "Reset password failed",
+                            });
+                        }
+                        res.json({
+                            status: statusS,
+                            data: newData,
+                            message: "Reset password successfully.",
+                        });
+                    })
+            } else {
                 res.json({
                     status: statusF,
                     data: [],
                     message: "Something is wrong.",
-                  });
+                });
             }
-        }else{
+        } else {
             res.json({
                 status: statusF,
                 data: [],
                 message: "Something is wrong.",
-              });
+            });
         }
     }
     deleteOne(req, res) {
@@ -260,7 +260,7 @@ class user {
     }
     editUser(req, res) {
         let form = formidable.IncomingForm();
-        form.uploadDir = path.join(__dirname, "../../public/imageUser");
+        form.uploadDir = path.join(__dirname, "../../public/uploads");
         form.keepExtensions = true;
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
@@ -275,7 +275,7 @@ class user {
                 }
                 const upload_files = files["image"];
 
-                let find_index_path = upload_files.path.indexOf("imageUser");
+                let find_index_path = upload_files.path.indexOf("uploads");
                 let cut_path = upload_files.path.slice(find_index_path);
                 let getExtension = cut_path.split(".")[1];
 
@@ -336,51 +336,51 @@ class user {
     }
     checkpass(req, res) {
         let condition = {
-          _id: mongoose.Types.ObjectId(req.params.idUser),
+            _id: mongoose.Types.ObjectId(req.params.idUser),
         };
-        modelUser.findOneAndUpdate(condition, {passed: true}, {new:true})
-        .exec((err, newData) => {
-          if (err) {
-            return res.json({
-              status: statusF,
-              data: [],
-              message: "Update user failed",
-            });
-          }
-          res.json({
-            status: statusS,
-            data: newData,
-            message: "Update user successfully.",
-          });
-        })
+        modelUser.findOneAndUpdate(condition, { passed: true }, { new: true })
+            .exec((err, newData) => {
+                if (err) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: "Update user failed",
+                    });
+                }
+                res.json({
+                    status: statusS,
+                    data: newData,
+                    message: "Update user successfully.",
+                });
+            })
     }
     verifyUser(req, res) {
-        let {idUser,hash} = req.params;
+        let { idUser, hash } = req.params;
         // console.log(idUser,hash)
         let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
 
-        if(idUser == decodeTokenEmail.sub){
-            modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, {active: true}, {new: true})
-            .exec((err, newData) => {
-                if (err) {
-                  return res.json({
-                    status: statusF,
-                    data: [],
-                    message: "Active user failed",
-                  });
-                }
-                res.json({
-                  status: statusS,
-                  data: newData,
-                  message: "Active user successfully.",
-                });
-              })
-        }else{
+        if (idUser == decodeTokenEmail.sub) {
+            modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, { active: true }, { new: true })
+                .exec((err, newData) => {
+                    if (err) {
+                        return res.json({
+                            status: statusF,
+                            data: [],
+                            message: "Active user failed",
+                        });
+                    }
+                    res.json({
+                        status: statusS,
+                        data: newData,
+                        message: "Active user successfully.",
+                    });
+                })
+        } else {
             res.json({
                 status: statusF,
                 data: [],
                 message: "Something is wrong.",
-              });
+            });
         }
     }
 }
