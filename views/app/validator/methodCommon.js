@@ -262,6 +262,22 @@ const checkAuthe = (input_role = 0) => {
 
     }
 }
+const checkAdmin = (input_role = 1) => {
+    return (req, res, next) => {
+        let role = res.locals.users;
+        if (role && role.role == input_role) {
+
+            next();
+        } else {
+            res.json({
+                status: statusF,
+                data: { currentRole: role.role },
+                message: `Rất tiếc, bạn không đủ quyền để thực hiện chức năng này!:`
+                // message: `We don't permission you do that, because your role have to ${input_role}!`
+            })
+        }
+    }
+}
 const sendMailer = async (userData) => {
 
     if (!userData.email) return
@@ -328,5 +344,6 @@ module.exports = {
     checkAuthe,
     sendMailer,
     sendMailer2,
-    checkActive
+    checkActive,
+    checkAdmin
 }
