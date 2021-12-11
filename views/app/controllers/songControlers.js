@@ -11,7 +11,7 @@ let formidable = require("formidable")
 class song {
     index(req, res, next) {
         let { _page, _limit, name, _id, view, date, day_release, active, id_Topic, id_Categories, id_album } = req.query;
-        console.log(req.headers.Authorization)
+        // console.log(req.headers.Authorization)
         let sort_by = {};
         if (view) {
             if (view === "asc" || view === "desc") {

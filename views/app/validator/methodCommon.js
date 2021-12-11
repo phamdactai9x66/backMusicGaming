@@ -49,7 +49,7 @@ const checkConfirmPass = (req, res, next) => {
 
                 if (files["image"]) {
                     res.locals.image_user = files["image"]
-                    console.log("hellow")
+                    // console.log("hellow")
                 }
                 next();
             } else {
