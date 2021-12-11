@@ -16,7 +16,7 @@ class UserPlaylist {
                 _id: mongoose.Types.ObjectId(_id)
             }
         }
-        if(id_User){
+        if (id_User) {
             condition = {
                 ...condition,
                 id_User: mongoose.Types.ObjectId(id_User)
@@ -30,7 +30,7 @@ class UserPlaylist {
                         data: [],
                         message: `we have some error:${err}`
                     })
-                }else if(data.length === 0){
+                } else if (data.length === 0) {
                     return res.json({
                         status: statusF,
                         data: [],
@@ -58,7 +58,7 @@ class UserPlaylist {
                         data: [],
                         message: `We have some error: ${err}`
                     })
-                }else if(playlist.length === 0){
+                } else if (playlist.length === 0) {
                     return res.status(400).json({
                         status: statusF,
                         data: [],
