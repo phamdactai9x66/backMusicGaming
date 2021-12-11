@@ -15,6 +15,9 @@ const room = new Schema({//chung ta dang mo ta cai luc do(schema) trong colectio
     status: {
         type: Boolean,
         default: 0
+    },
+    id_User: {
+        type: Schema.ObjectId
     }
 }, {
     timestamps: true

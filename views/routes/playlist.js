@@ -3,7 +3,7 @@ var express = require('express')
 var router = express.Router()
 
 const playlist_Controller = require("../app/controllers/playlistControllers");
-const { checkLogin, checkAuthe } = require('../app/validator/methodCommon');
+const { checkLogin, checkAuthe, checkAdmin } = require('../app/validator/methodCommon');
 
 
 // router.post("/", playlist_Controller.createPlaylist);
@@ -18,6 +18,6 @@ router.delete('/delete/:id', checkLogin, checkAuthe(0), playlist_Controller.remo
 
 router.put('/:id/update', checkLogin, checkAuthe(0), playlist_Controller.updatePlayList);
 
-router.put('/:id/pass', checkLogin, checkAuthe(0), playlist_Controller.checkpass);
+router.put('/:id/pass', checkLogin, checkAdmin(), playlist_Controller.checkpass);
 
 module.exports = router;
