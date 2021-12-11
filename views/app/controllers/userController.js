@@ -206,7 +206,7 @@ class user {
         console.log(req.body)
         let { passWord, confirmPassWord } = req.body;
 
-        let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
+        let decodeTokenEmail = await decode_jwt(hash, process.env.JWT_SECRET);
 
         if (idUser == decodeTokenEmail.sub) {
             if (passWord && confirmPassWord) {
@@ -363,7 +363,6 @@ class user {
         try {
             let { idUser, hash } = req.params;
             let decodeTokenEmail = await decode_jwt(hash);
-            // console.log(decodeTokenEmail)
             if (idUser == decodeTokenEmail?.sub) {
                 modelUser.findOneAndUpdate({ _id: idUser }, { active: true }, { new: true })
                     .exec((err, newData) => {

@@ -222,8 +222,9 @@ const checkLogin = async (req, res, next) => {
 
     try {
         let get_token = req.headers.authorization;
-        let cecode_token = decode_jwt(get_token, process.env.JWT_SECRET);
+        let cecode_token = await decode_jwt(get_token, process.env.JWT_SECRET);
         const find_user = await modelUser.findOne({ _id: cecode_token.sub })
+        // console.log(find_user)
         if (find_user) {
             res.locals.users = find_user;
             next()
