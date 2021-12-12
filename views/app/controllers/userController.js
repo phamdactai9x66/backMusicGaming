@@ -32,7 +32,7 @@ class user {
                 }
             }
             let getUser = await modelUser.find(condition).limit(_limit * 1).skip((_page - 1) * _limit);
-
+            
             if (typeof name == "string") {
                 // console.log(name)
                 let filterUser = getUsers.filter(currenValue => {
@@ -140,6 +140,7 @@ class user {
                     })
                 } else {
                     // console.log(user_Data)
+                    user_Data.passWord = undefined
                     await sendMailer(user_Data)
                     res.json({
                         status: statusS,
@@ -162,6 +163,7 @@ class user {
         let { user } = res.locals
         if (user) {
             let getId_user = encode_jwt(user._id);
+            user.passWord = undefined
             setTimeout(() => {
                 res.json({
                     status: statusS,
