@@ -327,7 +327,7 @@ class song {
         let condition = {
           _id: mongoose.Types.ObjectId(req.params.idsong),
         };
-        SongModel.findOneAndUpdate(condition, {passed: true}, {new:true})
+        SongModel.findOneAndUpdate(condition, {status: true}, {new:true})
         .exec((err, newData) => {
           if (err) {
             return res.json({

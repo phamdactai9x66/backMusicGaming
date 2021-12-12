@@ -281,7 +281,7 @@ class blogController {
     let condition = {
       _id: mongoose.Types.ObjectId(req.params.id_blog),
     };
-    modelBlog.findOneAndUpdate(condition, {passed: true}, {new:true})
+    modelBlog.findOneAndUpdate(condition, {status: true}, {new:true})
     .exec((err, newData) => {
       if (err) {
         return res.json({
