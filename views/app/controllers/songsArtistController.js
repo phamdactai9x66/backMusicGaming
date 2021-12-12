@@ -60,9 +60,8 @@ class songsArtist {
 
     try {
       let { id_Songs: idS, id_Artist: idA } = req.body;
-      let findSong = await song.find({ _id: mongoose.Types.ObjectId(idS) })
-      let findArtist = await artistModel.find({ _id: mongoose.Types.ObjectId(idA) })
-
+      let findSong = await song.find({ _id: idS })
+      let findArtist = await artistModel.find({ _id: idA })
       if (findSong.length && findArtist.length) {
 
         let newData = {
@@ -85,6 +84,12 @@ class songsArtist {
             })
           }
         });
+      } else {
+        res.json({
+          status: statusF,
+          data: [],
+          message: "Song or Artist unexist."
+        })
       }
     } catch (error) {
       res.json({
