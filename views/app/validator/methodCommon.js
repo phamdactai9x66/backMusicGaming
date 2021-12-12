@@ -130,8 +130,8 @@ const encode_jwt = (idUser) => {
         exp: new Date().setDate(new Date().getDate() + 10)
     }, process.env.JWT_SECRET)
 }
-const decode_jwt = (token) => {
-    return jwt.verify(token, process.env.JWT_SECRET)
+const decode_jwt = async (token) => {
+    return await jwt.verify(token, process.env.JWT_SECRET)
 }
 const signGoogle = async (req, res, next) => {
     if (!req || !Object.entries(req?.body).length) {
@@ -222,8 +222,9 @@ const checkLogin = async (req, res, next) => {
 
     try {
         let get_token = req.headers.authorization;
-        let cecode_token = decode_jwt(get_token, process.env.JWT_SECRET);
+        let cecode_token = await decode_jwt(get_token, process.env.JWT_SECRET);
         const find_user = await modelUser.findOne({ _id: cecode_token.sub })
+        // console.log(find_user)
         if (find_user) {
             res.locals.users = find_user;
             next()

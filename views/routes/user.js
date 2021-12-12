@@ -10,7 +10,7 @@ router.post("/login/facebook", signFacebook, user_Controller.loginGlobal)
 
 router.post("/signUp", checkConfirmPass, user_Controller.signUp);
 
-router.get("/verifyUser/:idUser/:hash", user_Controller.verifyUser)
+router.put("/verifyUser/:idUser/:hash", user_Controller.verifyUser)
 
 router.post("/login", getFormInput(), check_hash, checkActive, user_Controller.login)
 

@@ -3,10 +3,13 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const path = require("path");
 const { statusF, statusS, localhost, extensionImage } = require("../validator/variableCommon");
-const { encode_jwt, decode_jwt } = require("../validator/methodCommon");
+const { encode_jwt } = require("../validator/methodCommon");
 let formidable = require("formidable")
 const { sendMailer, sendMailer2 } = require("../validator/methodCommon");
 const bcrypt = require("bcrypt");
+const decode_jwt = (token) => {
+    return jwt.verify(token, process.env.JWT_SECRET)
+}
 
 class user {
     async index(req, res, next) {
@@ -136,7 +139,8 @@ class user {
                         message: err
                     })
                 } else {
-                    sendMailer(user_Data)
+                    // console.log(user_Data)
+                    await sendMailer(user_Data)
                     res.json({
                         status: statusS,
                         data: user_Data,
@@ -202,7 +206,7 @@ class user {
         console.log(req.body)
         let { passWord, confirmPassWord } = req.body;
 
-        let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
+        let decodeTokenEmail = await decode_jwt(hash, process.env.JWT_SECRET);
 
         if (idUser == decodeTokenEmail.sub) {
             if (passWord && confirmPassWord) {
@@ -354,28 +358,36 @@ class user {
                 });
             })
     }
-    verifyUser(req, res) {
-        let { idUser, hash } = req.params;
-        // console.log(idUser,hash)
-        let decodeTokenEmail = decode_jwt(hash, process.env.JWT_SECRET);
+    async verifyUser(req, res) {
 
-        if (idUser == decodeTokenEmail.sub) {
-            modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, { active: true }, { new: true })
-                .exec((err, newData) => {
-                    if (err) {
+        try {
+            let { idUser, hash } = req.params;
+            let decodeTokenEmail = await decode_jwt(hash);
+            if (idUser == decodeTokenEmail?.sub) {
+                modelUser.findOneAndUpdate({ _id: idUser }, { active: true }, { new: true })
+                    .exec((err, newData) => {
+                        if (err) {
+                            return res.json({
+                                status: statusF,
+                                data: [],
+                                message: "Active user failed",
+                            });
+                        }
                         return res.json({
-                            status: statusF,
-                            data: [],
-                            message: "Active user failed",
+                            status: statusS,
+                            data: newData,
+                            message: "Active user successfully.",
                         });
-                    }
-                    res.json({
-                        status: statusS,
-                        data: newData,
-                        message: "Active user successfully.",
-                    });
-                })
-        } else {
+                    })
+            } else {
+                res.json({
+                    status: statusF,
+                    data: [],
+                    message: "Something is wrong.",
+                });
+            }
+        } catch (err) {
+            console.log(err)
             res.json({
                 status: statusF,
                 data: [],

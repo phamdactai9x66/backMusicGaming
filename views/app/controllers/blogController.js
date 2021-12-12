@@ -40,7 +40,7 @@ class blogController {
       };
     }
 
-    modelBlog.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({}).exec((err, data) => {
+    modelBlog.find(condition).sort('-createdAt').limit(_limit * 1).skip((_page - 1) * _limit).select({}).exec((err, data) => {
       if (err) {
         return res.json({
           message: "Get blog failed.",
