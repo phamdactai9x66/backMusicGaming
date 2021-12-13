@@ -71,7 +71,7 @@ class blogController {
 
     form.parse(req, (err, fields, files) => {
       if (err) {
-        return res.status(400).json({
+        return res.json({
           message: "Error 400. Create new blog failed.",
           data: [],
           status: statusF,
@@ -81,7 +81,7 @@ class blogController {
       const { title, content, id_User, id_CategoryBlog } = fields;
 
       if (!title || !content || !id_User || !id_CategoryBlog) {
-        return res.status(400).json({
+        return res.json({
           message:
             "Please input full information. Vui lòng nhập đủ các trường.",
           data: [],
@@ -95,7 +95,7 @@ class blogController {
 
       modelBlog.findOne(condition).exec((err, blogExisted) => {
         if (err) {
-          return res.status(400).json({
+          return res.json({
             message: "Error: " + err,
             data: [],
             status: statusF,
@@ -103,7 +103,7 @@ class blogController {
         }
 
         if (blogExisted) {
-          return res.status(400).json({
+          return res.json({
             message: "This blog was existed in database.",
             data: [],
             status: statusF,
@@ -117,14 +117,14 @@ class blogController {
 
         const checkImage = cutPath.split(".")[1];
         if (!checkImage) {
-          return res.status(400).json({
+          return res.json({
             status: statusF,
             data: [],
             message: `We don't allow file is blank!`,
           });
         }
         if (!extensionImage.includes(checkImage)) {
-          return res.status(400).json({
+          return res.json({
             status: statusF,
             data: [],
             message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
@@ -141,7 +141,7 @@ class blogController {
         let createPlaylist = new modelBlog(data);
         createPlaylist.save((err, data) => {
           if (err) {
-            return res.status(400).json({
+            return res.json({
               message: err,
               status: statusF,
               data: [],
@@ -171,7 +171,7 @@ class blogController {
 
     form.parse(req, (err, fields, files) => {
       if (err) {
-        return res.status(400).json({
+        return res.json({
           message: "Error 400. Update blog failed.",
           data: [],
           status: statusF,
@@ -181,7 +181,7 @@ class blogController {
       const { title, content, id_User, id_CategoryBlog } = fields;
 
       if (!title || !content || !id_User || !id_CategoryBlog) {
-        return res.status(400).json({
+        return res.json({
           message:
             "Please input full information. Vui lòng nhập đủ các trường.",
           data: [],
@@ -195,7 +195,7 @@ class blogController {
 
       modelBlog.findOne(conditionTitle).exec((err, blogExisted) => {
         if (err) {
-          return res.status(400).json({
+          return res.json({
             message: "Error: " + err,
             data: [],
             status: statusF,
@@ -203,7 +203,7 @@ class blogController {
         }
 
         if (blogExisted) {
-          return res.status(400).json({
+          return res.json({
             message: "This blog was existed in database.",
             data: [],
             status: statusF,
@@ -217,14 +217,14 @@ class blogController {
 
           const checkImage = cutPath.split(".")[1];
           if (!checkImage) {
-            return res.status(400).json({
+            return res.json({
               status: statusF,
               data: [],
               message: `We don't allow file is blank!`,
             });
           }
           if (!extensionImage.includes(checkImage)) {
-            return res.status(400).json({
+            return res.json({
               status: statusF,
               data: [],
               message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
@@ -246,7 +246,7 @@ class blogController {
 
         modelBlog.findOneAndUpdate(condition, { $set: data }, { new: true }).exec((err, newData) => {
           if (err) {
-            return res.status(400).json({
+            return res.json({
               status: statusF,
               data: [],
               message: "Update blog failed.",
@@ -270,7 +270,7 @@ class blogController {
 
     modelBlog.findOneAndRemove(condition).exec((err) => {
       if (err) {
-        return res.status(400).json({
+        return res.json({
           status: statusF,
           message: `We have few error: ${err}`
         })

@@ -77,7 +77,7 @@ class topics {
 
         form.parse(req, (err, fields, files) => {
             if (err) {
-                return res.status(400).json({
+                return res.json({
                     message: "Error 400. Add New Topic",
                     data: [],
                     status: statusF
@@ -165,7 +165,7 @@ class topics {
 
         form.parse(req, (err, fields, files) => {
             if (err) {
-                return res.status(400).json({
+                return res.json({
                     message: "Error 400. Add New Topic failed.",
                     status: statusF,
                     data: [],
