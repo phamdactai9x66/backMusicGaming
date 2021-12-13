@@ -10,7 +10,7 @@ let formidable = require("formidable")
 
 class song {
     index(req, res, next) {
-        let { _page, _limit, name, _id, view, date, day_release, active, id_Topic, id_Categories, id_album } = req.query;
+        let { _page, _limit, name, _id, view, date, day_release, active, id_Topic, id_Categories, id_album, status } = req.query;
         console.log(req.headers.Authorization)
         let sort_by = {};
         if (view) {
@@ -52,7 +52,8 @@ class song {
         if (id_Topic) condition = { ...condition, id_Topic: id_Topic };
         if (id_Categories) condition = { ...condition, id_Categories: id_Categories };
         if (id_album) condition = { ...condition, id_album: id_album };
-
+        if (status) condition = { ...condition, status: status}
+        
         SongModel.find(condition).sort(sort_by).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, response) => {
                 if (err || !response) {
