@@ -32,7 +32,7 @@ class user {
                 }
             }
             let getUser = await modelUser.find(condition).limit(_limit * 1).skip((_page - 1) * _limit);
-
+            
             if (typeof name == "string") {
                 // console.log(name)
                 let filterUser = getUsers.filter(currenValue => {
@@ -140,6 +140,7 @@ class user {
                     })
                 } else {
                     // console.log(user_Data)
+                    user_Data.passWord = undefined
                     await sendMailer(user_Data)
                     res.json({
                         status: statusS,
@@ -162,6 +163,7 @@ class user {
         let { user } = res.locals
         if (user) {
             let getId_user = encode_jwt(user._id);
+            user.passWord = undefined
             setTimeout(() => {
                 res.json({
                     status: statusS,
@@ -222,6 +224,7 @@ class user {
                                 message: "Reset password failed",
                             });
                         }
+                        newData.passWord = undefined
                         res.json({
                             status: statusS,
                             data: newData,
@@ -338,26 +341,6 @@ class user {
             })
         }
     }
-    checkpass(req, res) {
-        let condition = {
-            _id: mongoose.Types.ObjectId(req.params.idUser),
-        };
-        modelUser.findOneAndUpdate(condition, { passed: true }, { new: true })
-            .exec((err, newData) => {
-                if (err) {
-                    return res.json({
-                        status: statusF,
-                        data: [],
-                        message: "Update user failed",
-                    });
-                }
-                res.json({
-                    status: statusS,
-                    data: newData,
-                    message: "Update user successfully.",
-                });
-            })
-    }
     async verifyUser(req, res) {
 
         try {
@@ -373,6 +356,7 @@ class user {
                                 message: "Active user failed",
                             });
                         }
+                        newData.passWord = undefined
                         return res.json({
                             status: statusS,
                             data: newData,

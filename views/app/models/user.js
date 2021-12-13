@@ -32,10 +32,6 @@ const user = new Schema({//chung ta dang mo ta cai luc do(schema) trong colectio
     },
     role: { type: Number, default: 0 },
     active: { type: Boolean, default: false },
-    passed: {
-        type: Boolean,
-        default: false
-    }
 }, {
     timestamps: true
 })

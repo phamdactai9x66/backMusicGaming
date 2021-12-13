@@ -18,6 +18,5 @@ router.delete('/delete/:id', checkLogin, checkAuthe(0), playlist_Controller.remo
 
 router.put('/:id/update', checkLogin, checkAuthe(0), playlist_Controller.updatePlayList);
 
-router.put('/:id/pass', checkLogin, checkAdmin(), playlist_Controller.checkpass);
 
 module.exports = router;

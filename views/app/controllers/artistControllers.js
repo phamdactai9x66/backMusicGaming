@@ -8,8 +8,15 @@ let formidable = require("formidable")
 
 class artist {
     async index(req, res, next) {
-        let { _page, _limit, name, _id } = req.query;
-        modelArtist.find({}).limit(_limit * 1).skip((_page - 1) * _limit).select({})
+        let { _page, _limit, name, _id, status } = req.query;
+        let condition = {};
+        if (status) {
+            condition = {
+                ...condition,
+                status: status,
+            };
+        }
+        modelArtist.find(condition).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, data) => {
                 if (err || !data) {
                     return res.json({
@@ -204,23 +211,23 @@ class artist {
     }
     checkpass(req, res) {
         let condition = {
-          _id: mongoose.Types.ObjectId(req.params.idArtist),
+            _id: mongoose.Types.ObjectId(req.params.idArtist),
         };
-        modelArtist.findOneAndUpdate(condition, {passed: true}, {new:true})
-        .exec((err, newData) => {
-          if (err) {
-            return res.json({
-              status: statusF,
-              data: [],
-              message: "Update artist failed",
-            });
-          }
-          res.json({
-            status: statusS,
-            data: newData,
-            message: "Update artist successfully.",
-          });
-        })
-      }
+        modelArtist.findOneAndUpdate(condition, { status: true }, { new: true })
+            .exec((err, newData) => {
+                if (err) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: "Update artist failed",
+                    });
+                }
+                res.json({
+                    status: statusS,
+                    data: newData,
+                    message: "Update artist successfully.",
+                });
+            })
+    }
 }
 module.exports = new artist;
