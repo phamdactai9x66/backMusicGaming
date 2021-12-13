@@ -179,7 +179,6 @@ class blogController {
       }
 
       const { title, content, id_User, id_CategoryBlog } = fields;
-
       if (!title || !content || !id_User || !id_CategoryBlog) {
         return res.json({
           message:
@@ -202,13 +201,6 @@ class blogController {
           });
         }
 
-        if (blogExisted) {
-          return res.json({
-            message: "This blog was existed in database.",
-            data: [],
-            status: statusF,
-          });
-        }
         let data = {};
         const uploadFile = files["image"];
         if (uploadFile) {
@@ -216,24 +208,20 @@ class blogController {
           const cutPath = uploadFile.path.slice(indexOfPath);
 
           const checkImage = cutPath.split(".")[1];
-          if (!checkImage) {
-            return res.json({
-              status: statusF,
-              data: [],
-              message: `We don't allow file is blank!`,
-            });
+          if (checkImage) {
+            if (!extensionImage.includes(checkImage)) {
+              return res.json({
+                status: statusF,
+                data: [],
+                message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
+              });
+            }
+            data.image = `${localhost}${cutPath}`;
           }
-          if (!extensionImage.includes(checkImage)) {
-            return res.json({
-              status: statusF,
-              data: [],
-              message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
-            });
-          }
+
 
           data = {
             ...fields,
-            image: `${localhost}${cutPath}`,
             id_User: mongoose.Types.ObjectId(id_User),
             id_CategoryBlog: mongoose.Types.ObjectId(id_CategoryBlog),
           };
@@ -287,20 +275,15 @@ class blogController {
     let condition = {
       _id: mongoose.Types.ObjectId(req.params.id_blog),
     };
-    modelBlog.findOneAndUpdate(condition, {status: true}, {new:true})
-    .exec((err, newData) => {
-      if (err) {
-        return res.json({
-          status: statusF,
-          data: [],
-          message: "Update blog failed",
-        });
-      }
-      res.json({
-        status: statusS,
-        data: newData,
-        message: "Update blog successfully.",
-      });
+    modelBlog.findOneAndUpdate(condition, { status: true }, { new: true })
+      .exec((err, newData) => {
+        if (err) {
+          return res.json({
+            status: statusF,
+            data: [],
+            message: "Update blog failed",
+          });
+        }
     })
   }
 }
