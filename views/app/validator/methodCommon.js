@@ -263,7 +263,7 @@ const checkAuthe = (input_role = 0) => {
 
     }
 }
-const checkAdmin = (input_role = 1) => {
+const checkAdmin = (input_role = 2) => {
     return (req, res, next) => {
         let role = res.locals.users;
         if (role && role.role == input_role) {
