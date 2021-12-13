@@ -5,7 +5,6 @@ let path = require("path");
 const modelArtist = require("../models/artist");
 
 let formidable = require("formidable");
-const { resolve4 } = require("dns/promises");
 
 
 
