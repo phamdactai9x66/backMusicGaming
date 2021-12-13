@@ -267,25 +267,6 @@ class playlist {
         });
     });
   }
-  checkpass(req, res) {
-    let condition = {
-      _id: mongoose.Types.ObjectId(req.params.id),
-    };
-    modelPlaylist.findOneAndUpdate(condition, {passed: true}, {new:true})
-    .exec((err, newData) => {
-      if (err) {
-        return res.json({
-          status: statusF,
-          data: [],
-          message: "Update playlist failed",
-        });
-      }
-      res.json({
-        status: statusS,
-        data: newData,
-        message: "Update playlist successfully.",
-      });
-    })
-  }
+  
 }
 module.exports = new playlist();

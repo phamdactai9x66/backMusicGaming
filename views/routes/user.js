@@ -22,8 +22,6 @@ router.delete("/:idUser/delete", checkLogin, checkAuthe(0), user_Controller.dele
 
 router.put("/:idUser/update", checkLogin, checkAuthe(), user_Controller.editUser)
 
-router.put("/:idUser/pass", checkLogin, checkAdmin(), user_Controller.checkpass)
-
 router.get("/:idUser", checkLogin, checkAuthe(), user_Controller.getOne);
 
 router.get("/", checkLogin, checkAuthe(0), user_Controller.index);
