@@ -211,7 +211,7 @@ class artist {
     }
     checkpass(req, res) {
         let condition = {
-            _id: mongoose.Types.ObjectId(req.params.idArtist),
+            _id: mongoess.Types.ObjectId(req.params.idArtist),
         };
         modelArtist.findOneAndUpdate(condition, { status: true }, { new: true })
             .exec((err, newData) => {
