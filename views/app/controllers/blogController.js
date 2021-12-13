@@ -165,7 +165,7 @@ class blogController {
 
     form.parse(req, (err, fields, files) => {
       if (err) {
-        return res.status(400).json({
+        return res.json({
           message: "Error 400. Update blog failed.",
           data: [],
           status: statusF,
@@ -173,9 +173,8 @@ class blogController {
       }
 
       const { title, content, id_User, id_CategoryBlog } = fields;
-
       if (!title || !content || !id_User || !id_CategoryBlog) {
-        return res.status(400).json({
+        return res.json({
           message:
             "Please input full information. Vui lòng nhập đủ các trường.",
           data: [],
@@ -189,20 +188,13 @@ class blogController {
 
       modelBlog.findOne(conditionTitle).exec((err, blogExisted) => {
         if (err) {
-          return res.status(400).json({
+          return res.json({
             message: "Error: " + err,
             data: [],
             status: statusF,
           });
         }
 
-        if (blogExisted) {
-          return res.status(400).json({
-            message: "This blog was existed in database.",
-            data: [],
-            status: statusF,
-          });
-        }
         let data = {};
         const uploadFile = files["image"];
         if (uploadFile) {
@@ -210,24 +202,20 @@ class blogController {
           const cutPath = uploadFile.path.slice(indexOfPath);
 
           const checkImage = cutPath.split(".")[1];
-          if (!checkImage) {
-            return res.status(400).json({
-              status: statusF,
-              data: [],
-              message: `We don't allow file is blank!`,
-            });
+          if (checkImage) {
+            if (!extensionImage.includes(checkImage)) {
+              return res.json({
+                status: statusF,
+                data: [],
+                message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
+              });
+            }
+            data.image = `${localhost}${cutPath}`;
           }
-          if (!extensionImage.includes(checkImage)) {
-            return res.status(400).json({
-              status: statusF,
-              data: [],
-              message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
-            });
-          }
+
 
           data = {
             ...fields,
-            image: `${localhost}${cutPath}`,
             id_User: mongoose.Types.ObjectId(id_User),
             id_CategoryBlog: mongoose.Types.ObjectId(id_CategoryBlog),
           };
@@ -240,7 +228,7 @@ class blogController {
 
         modelBlog.findOneAndUpdate(condition, { $set: data }, { new: true }).exec((err, newData) => {
           if (err) {
-            return res.status(400).json({
+            return res.json({
               status: statusF,
               data: [],
               message: "Update blog failed.",
@@ -281,21 +269,21 @@ class blogController {
     let condition = {
       _id: mongoose.Types.ObjectId(req.params.id_blog),
     };
-    modelBlog.findOneAndUpdate(condition, {passed: true}, {new:true})
-    .exec((err, newData) => {
-      if (err) {
-        return res.json({
-          status: statusF,
-          data: [],
-          message: "Update blog failed",
+    modelBlog.findOneAndUpdate(condition, { passed: true }, { new: true })
+      .exec((err, newData) => {
+        if (err) {
+          return res.json({
+            status: statusF,
+            data: [],
+            message: "Update blog failed",
+          });
+        }
+        res.json({
+          status: statusS,
+          data: newData,
+          message: "Update blog successfully.",
         });
-      }
-      res.json({
-        status: statusS,
-        data: newData,
-        message: "Update blog successfully.",
-      });
-    })
+      })
   }
 }
 module.exports = new blogController();
