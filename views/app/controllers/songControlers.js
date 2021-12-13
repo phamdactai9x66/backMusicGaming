@@ -4,7 +4,8 @@ let mongoose = require("mongoose");
 let path = require("path");
 const modelArtist = require("../models/artist");
 
-let formidable = require("formidable")
+let formidable = require("formidable");
+const { resolve4 } = require("dns/promises");
 
 
 
@@ -17,7 +18,7 @@ class song {
             if (view === "asc" || view === "desc") {
                 sort_by = { ...sort_by, view: view === "asc" ? 1 : -1 };
             } else {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "You need input with 'asc' or 'desc'."
@@ -28,7 +29,7 @@ class song {
             if (date === "asc" || date === "desc") {
                 sort_by = { ...sort_by, createdAt: date === "asc" ? 1 : -1 };
             } else {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "You need input with 'asc' or 'desc'."
@@ -39,7 +40,7 @@ class song {
             if (day_release === "asc" || day_release === "desc") {
                 sort_by = { ...sort_by, day_release: day_release === "asc" ? 1 : -1 };
             } else {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "You need input with 'asc' or 'desc'."

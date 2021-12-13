@@ -74,7 +74,7 @@ class songPlaylist {
     let form = formidable.IncomingForm();
     form.parse( req, (err, fields, files) => {
       if(err || !fields){
-        return res.status(400).json({
+        return res.json({
           status: statusF,
           data: [],
           message: "Create Song playlist failed. Error: " + err
@@ -82,7 +82,7 @@ class songPlaylist {
       }else{
         let { id_User_Playlist, id_Song } = fields;
         if(!id_User_Playlist || !id_Song){
-          return res.status(400).json({
+          return res.json({
             status: statusF,
             data: [],
             message: "Create Song playlist failed. Error: " + err
@@ -96,7 +96,7 @@ class songPlaylist {
           let createSongPlaylist = new modelSongPlaylist(format_form);
           createSongPlaylist.save( (err, data) => {
             if(err){
-              return res.status(400).json({
+              return res.json({
                 status: statusF,
                 data: [],
                 message: "Create Song playlist failed. Error: " + err
@@ -117,7 +117,7 @@ class songPlaylist {
     let form = formidable.IncomingForm();
     form.parse( req, (err, fields, files) => {
       if(err || !fields){
-        return res.status(400).json({
+        return res.json({
           status: statusF,
           data: [],
           message: "Update Song playlist failed. Error: " + err
@@ -129,7 +129,7 @@ class songPlaylist {
         const { id_User_Playlist, id_Song } = fields;
 
         if( !id_Song || !id_User_Playlist){
-          return res.status(400).json({
+          return res.json({
             status: statusF,
             data: [],
             message: "Please input full information to update."
@@ -144,13 +144,13 @@ class songPlaylist {
         modelSongPlaylist.findOneAndUpdate( condition, { $set: format_form }, { new: true })
           .exec((err, new_data) => {
             if (err) {
-              return res.status(400).json({
+              return res.json({
                 status: statusF,
                 message: `We have few error: ${err}`,
                 data: []
               })
             } else {
-              return res.status(400).json({
+              return res.json({
                 status: statusS,
                 data: [new_data],
                 message: `Update successfully.`
@@ -167,7 +167,7 @@ class songPlaylist {
     modelSongPlaylist.findOneAndRemove(condition)
       .exec((err) => {
         if (err) {
-          return res.status(400).json({
+          return res.json({
             status: statusF,
             message: `We have few error: ${err}`
           })
