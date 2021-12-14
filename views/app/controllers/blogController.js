@@ -283,7 +283,9 @@ class blogController {
             data: [],
             message: "Update blog failed",
           });
-        })
+        }
+      })
+
   }
 }
 module.exports = new blogController();
