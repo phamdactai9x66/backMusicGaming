@@ -9,7 +9,7 @@ const playlist = new Schema({//chung ta dang mo ta cai luc do(schema) trong cole
         type: String, maxLength: 255, require: true, trim: true
     },
     image: { type: String, default: "" },
-    passed: { type: Boolean, default: false}
+
 }, {
     timestamps: true
 })

@@ -4,20 +4,20 @@ let mongoose = require("mongoose");
 let path = require("path");
 const modelArtist = require("../models/artist");
 
-let formidable = require("formidable")
+let formidable = require("formidable");
 
 
 
 class song {
     index(req, res, next) {
-        let { _page, _limit, name, _id, view, date, day_release, active, id_Topic, id_Categories, id_album } = req.query;
+        let { _page, _limit, name, _id, view, date, day_release, active, id_Topic, id_Categories, id_album, status } = req.query;
         // console.log(req.headers.Authorization)
         let sort_by = {};
         if (view) {
             if (view === "asc" || view === "desc") {
                 sort_by = { ...sort_by, view: view === "asc" ? 1 : -1 };
             } else {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "You need input with 'asc' or 'desc'."
@@ -28,7 +28,7 @@ class song {
             if (date === "asc" || date === "desc") {
                 sort_by = { ...sort_by, createdAt: date === "asc" ? 1 : -1 };
             } else {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "You need input with 'asc' or 'desc'."
@@ -39,7 +39,7 @@ class song {
             if (day_release === "asc" || day_release === "desc") {
                 sort_by = { ...sort_by, day_release: day_release === "asc" ? 1 : -1 };
             } else {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "You need input with 'asc' or 'desc'."
@@ -52,7 +52,8 @@ class song {
         if (id_Topic) condition = { ...condition, id_Topic: id_Topic };
         if (id_Categories) condition = { ...condition, id_Categories: id_Categories };
         if (id_album) condition = { ...condition, id_album: id_album };
-
+        if (status) condition = { ...condition, status: status}
+        
         SongModel.find(condition).sort(sort_by).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, response) => {
                 if (err || !response) {
@@ -327,7 +328,7 @@ class song {
         let condition = {
           _id: mongoose.Types.ObjectId(req.params.idsong),
         };
-        SongModel.findOneAndUpdate(condition, {passed: true}, {new:true})
+        SongModel.findOneAndUpdate(condition, {status: true}, {new:true})
         .exec((err, newData) => {
           if (err) {
             return res.json({

@@ -15,5 +15,6 @@ router.put("/:idsong/update", checkLogin, checkAuthe(0), song_Controller.editSon
 router.put("/:idsong/pass", checkLogin, checkAdmin(), song_Controller.checkpass)
 
 router.get("/:idsong", song_Controller.getOne)
+// router.get("/song/admin", song_Controller.index);
 router.get("/", song_Controller.index);
 module.exports = router;

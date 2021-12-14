@@ -53,13 +53,13 @@ class UserPlaylist {
         modelUserPlaylist.findById(condition)
             .exec((err, playlist) => {
                 if (err || !playlist) {
-                    return res.status(400).json({
+                    return res.json({
                         status: statusF,
                         data: [],
                         message: `We have some error: ${err}`
                     })
                 } else if (playlist.length === 0) {
-                    return res.status(400).json({
+                    return res.json({
                         status: statusF,
                         data: [],
                         message: "Playlist does not exist."
@@ -78,7 +78,7 @@ class UserPlaylist {
         form.keepExtensions = true;
         form.parse(req, (err, fields, files) => {
             if (err) {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "Create User Playlist failed. Error: " + err
@@ -95,7 +95,7 @@ class UserPlaylist {
                 let createUserPlaylist = new modelUserPlaylist(format_form);
                 createUserPlaylist.save((err, userPlaylist) => {
                     if (err) {
-                        return res.status(400).json({
+                        return res.json({
                             status: statusF,
                             message: `We have few error: ${err}`
                         })
@@ -108,7 +108,7 @@ class UserPlaylist {
                     }
                 })
             } else {
-                return res.status(400).json({
+                return res.json({
                     status: statusF,
                     data: [],
                     message: "We don't allow input is blank !"

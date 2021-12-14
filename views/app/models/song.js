@@ -29,6 +29,10 @@ const song = new Schema({
     },
     id_album: {
         type: Schema.ObjectId
+    },
+    status: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

@@ -14,7 +14,7 @@ const artist = new Schema({//chung ta dang mo ta cai luc do(schema) trong colect
     gender: { type: Boolean, default: false },
     birth: { type: Date },
     image: { type: String, default: "" },
-    passed: {
+    status: {
         type: Boolean,
         default: false
     }
