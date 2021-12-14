@@ -5,6 +5,7 @@ const { checkLogin, checkAuthe } = require("../app/validator/methodCommon");
 var router = express.Router();
 
 router.post("/add", checkLogin, checkAuthe(), songsArtistController.create);
+// router.post("/add", songsArtistController.create);
 
 router.get("/:idSongsArtist", songsArtistController.getOne);
 
