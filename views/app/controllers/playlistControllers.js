@@ -80,7 +80,7 @@ class playlist {
 
     form.parse(req, (err, fields, files) => {
       if (err) {
-        return res.status(400).json({
+        return res.json({
           message: "Error 400. Add New Play list failed.",
           data: [],
           status: statusF,
@@ -204,7 +204,7 @@ class playlist {
 
     form.parse(req, (err, fields, files) => {
       if (err) {
-        return res.status(400).json({
+        return res.json({
           message: "Error 400. Add New Play list failed.",
           status: statusF,
           data: [],
