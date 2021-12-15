@@ -32,7 +32,6 @@ class user {
                 }
             }
             let getUser = await modelUser.find(condition).limit(_limit * 1).skip((_page - 1) * _limit);
-            
             if (typeof name == "string") {
                 // console.log(name)
                 let filterUser = getUsers.filter(currenValue => {
@@ -103,6 +102,7 @@ class user {
 
             let getExtension = cut_path.split(".")[1];
             const findUSer = getUsers.find(currenUser => (currenUser.userName === userName))
+            console.log(findUSer);
             if (findUSer) {
                 return res.json({
                     status: statusF,

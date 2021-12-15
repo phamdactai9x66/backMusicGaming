@@ -1,5 +1,5 @@
-const HtmlEmail1 = (data,hash) => {
-    return `
+const HtmlEmail1 = (data, hash) => {
+  return `
     <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
@@ -191,7 +191,7 @@ const HtmlEmail1 = (data,hash) => {
 														<tr>
 															<td>
 																<div align="center">
-																	<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://www.example.com" style="height:42px;width:165px;v-text-anchor:middle;" arcsize="0%" stroke="false" fillcolor="#ffffff"><w:anchorlock/><v:textbox inset="0px,0px,0px,0px"><center style="color:#000000; font-family:Georgia, 'Times New Roman', serif; font-size:14px"><![endif]--><a href="http://localhost:3000/verify/${data._id}/${hash}" target="_blank" style="text-decoration:none;display:inline-block;color:#000000;background-color:#ffffff;border-radius:0px;width:auto;border-top:1px solid #ffffff;border-right:1px solid #ffffff;border-bottom:1px solid #ffffff;border-left:1px solid #ffffff;padding-top:5px;padding-bottom:5px;font-family:'Bitter', Georgia, Times, 'Times New Roman', serif;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:14px;display:inline-block;letter-spacing:normal;"><span style="font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"><span style="font-size: 14px; line-height: 28px;" data-mce-style="font-size: 14px; line-height: 28px;"><strong>Kích hoạt tài khoản</strong></span></span></span></a>
+																	<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://www.example.com" style="height:42px;width:165px;v-text-anchor:middle;" arcsize="0%" stroke="false" fillcolor="#ffffff"><w:anchorlock/><v:textbox inset="0px,0px,0px,0px"><center style="color:#000000; font-family:Georgia, 'Times New Roman', serif; font-size:14px"><![endif]--><a href="https://fe-music-game-n09knujdu-hoinc931.vercel.app/verify/${data._id}/${hash}" target="_blank" style="text-decoration:none;display:inline-block;color:#000000;background-color:#ffffff;border-radius:0px;width:auto;border-top:1px solid #ffffff;border-right:1px solid #ffffff;border-bottom:1px solid #ffffff;border-left:1px solid #ffffff;padding-top:5px;padding-bottom:5px;font-family:'Bitter', Georgia, Times, 'Times New Roman', serif;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:14px;display:inline-block;letter-spacing:normal;"><span style="font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"><span style="font-size: 14px; line-height: 28px;" data-mce-style="font-size: 14px; line-height: 28px;"><strong>Kích hoạt tài khoản</strong></span></span></span></a>
 																	<!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
 																</div>
 															</td>
@@ -320,8 +320,8 @@ const HtmlEmail1 = (data,hash) => {
 
 </html>`
 }
-const HtmlEmail2 = (data,hash) => {
-    return `
+const HtmlEmail2 = (data, hash) => {
+  return `
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -729,6 +729,6 @@ const HtmlEmail2 = (data,hash) => {
     `
 }
 module.exports = {
-    HtmlEmail1,
-    HtmlEmail2
+  HtmlEmail1,
+  HtmlEmail2
 };
