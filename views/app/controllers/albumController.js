@@ -3,7 +3,8 @@ let { statusF, statusS, localhost, extensionAudio, extensionImage } = require(".
 let mongoess = require("mongoose");
 let path = require("path");
 
-let formidable = require("formidable")
+let formidable = require("formidable");
+const { cloudinary } = require("../validator/methodCommon");
 
 
 class album {
@@ -92,7 +93,7 @@ class album {
         form.keepExtensions = true;
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
-        form.parse(req, (err, fields, files) => {
+        form.parse(req, async (err, fields, files) => {
             if (err) {
                 return res.json({
                     status: statusF,
@@ -126,10 +127,11 @@ class album {
                     })
                 }
 
+                const getUrl = await cloudinary.uploader.upload(upload_files.path);
                 let format_form = {
                     title: title.trim(),
                     id_Artist: id_Artist,
-                    image: localhost + cut_path,
+                    image: getUrl.url,
                 }
                 let createAlbum = new modelAlbum(format_form);
                 createAlbum.save((err, album) => {
@@ -192,11 +194,12 @@ class album {
             let find_index_path = upload_files.path.indexOf("upload");
             let cut_path = upload_files.path.slice(find_index_path);
             let getExtension = cut_path.split(".")[1]?.toLowerCase();
-            // console.log((getExtension + '').toLowerCase());
+            
             if (getExtension) {
                 if (extensionImage.includes(getExtension)) {
+                    const getUrl = await cloudinary.uploader.upload(upload_files.path);
                     format_form = {
-                        ...format_form, image: localhost + cut_path
+                        ...format_form, image: getUrl.url
                     }
                 } else {
                     return res.json({
