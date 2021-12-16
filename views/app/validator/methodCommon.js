@@ -133,11 +133,24 @@ const encode_jwt = (idUser) => {
 const decode_jwt = async (token) => {
     return await jwt.verify(token, process.env.JWT_SECRET)
 }
+var cloudinary = require('cloudinary').v2;
+cloudinary.config({
+    cloud_name: 'awdawd',
+    api_key: '435351667855833',
+    api_secret: '15Gcbu89_cF4yThajLQLJyk6caE',
+    secure: true
+});
 const signGoogle = async (req, res, next) => {
     if (!req || !Object.entries(req?.body).length) {
         return res.json({
             status: statusF,
             message: "body null"
+        })
+    }
+    if (req.body.error) {
+        return res.json({
+            status: statusF,
+            message: "You can't use this platform for login."
         })
     }
     let { googleId, email, givenName, familyName, imageUrl } = req.body.profileObj
@@ -346,5 +359,6 @@ module.exports = {
     sendMailer,
     sendMailer2,
     checkActive,
-    checkAdmin
+    checkAdmin,
+    cloudinary
 }

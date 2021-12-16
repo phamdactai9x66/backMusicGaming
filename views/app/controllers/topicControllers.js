@@ -1,6 +1,7 @@
 const topic = require("../models/topic");
 const mongoose = require("mongoose")
 let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
+let { cloudinary } = require('../validator/methodCommon');
 const formidable = require('formidable');
 const path = require('path')
 
@@ -98,7 +99,7 @@ class topics {
                 name: fields.name
             }
 
-            topic.findOne(condition).exec((err, topicExisted) => {
+            topic.findOne(condition).exec(async (err, topicExisted) => {
                 if (err) {
                     return res.json({
                         message: "Error: " + err
@@ -116,7 +117,6 @@ class topics {
                 const uploadFile = files['image'];
                 const indexOfPath = uploadFile.path.indexOf('upload')
                 const cutPath = uploadFile.path.slice(indexOfPath);
-                console.log(uploadFile)
 
                 const checkImage = cutPath.split('.')[1];
                 if (!checkImage) {
@@ -133,10 +133,10 @@ class topics {
                         message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
                     })
                 }
-
+                const getUrl = await cloudinary.uploader.upload(uploadFile.path);
                 const data = {
                     ...fields,
-                    image: `http://localhost:5000/${cutPath}`
+                    image: getUrl.url
                 }
                 let createTopic = new topic(data);
                 createTopic.save((err, data) => {
@@ -164,7 +164,7 @@ class topics {
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
 
-        form.parse(req, (err, fields, files) => {
+        form.parse(req, async (err, fields, files) => {
             if (err) {
                 return res.json({
                     message: "Error 400. Add New Topic failed.",
@@ -195,8 +195,9 @@ class topics {
             };
             if (checkImage) {
                 if (extensionImage.includes(checkImage)) {
+                    const getUrl = await cloudinary.uploader.upload(uploadFile.path);
                     format_form = {
-                        ...format_form, image: localhost + cutPath
+                        ...format_form, image: getUrl.url
                     }
                 } else {
                     return res.json({
@@ -208,6 +209,7 @@ class topics {
             }
             topic.findOneAndUpdate(condition, { $set: format_form }, { new: true })
                 .exec((err, newData) => {
+                    console.log(err)
                     if (err) {
                         return res.json({
                             status: statusF,
