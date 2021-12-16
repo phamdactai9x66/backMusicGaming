@@ -8,6 +8,7 @@ let {
 let mongoose = require("mongoose");
 const formidable = require("formidable");
 let path = require("path");
+let { cloudinary } = require('../validator/methodCommon');
 
 class blogController {
   // lấy dữ liệu theo query nhé ae
@@ -93,7 +94,7 @@ class blogController {
         title: title,
       };
 
-      modelBlog.findOne(condition).exec((err, blogExisted) => {
+      modelBlog.findOne(condition).exec(async(err, blogExisted) => {
         if (err) {
           return res.json({
             message: "Error: " + err,
@@ -130,10 +131,11 @@ class blogController {
             message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
           });
         }
+        const getUrl = await cloudinary.uploader.upload(uploadFile.path);
 
         const data = {
           ...fields,
-          image: `${localhost}${cutPath}`,
+          image: getUrl.url,
           id_User: mongoose.Types.ObjectId(id_User),
           id_CategoryBlog: mongoose.Types.ObjectId(id_CategoryBlog),
         };
@@ -192,7 +194,7 @@ class blogController {
         title: title,
       };
 
-      modelBlog.findOne(conditionTitle).exec((err, blogExisted) => {
+      modelBlog.findOne(conditionTitle).exec( async (err, blogExisted) => {
         if (err) {
           return res.json({
             message: "Error: " + err,
@@ -208,7 +210,8 @@ class blogController {
           const cutPath = uploadFile.path.slice(indexOfPath);
 
           const checkImage = cutPath.split(".")[1];
-          if (checkImage) {
+          const getUrl = await cloudinary.uploader.upload(uploadFile.path);
+        if (checkImage) {
             if (!extensionImage.includes(checkImage)) {
               return res.json({
                 status: statusF,
@@ -216,7 +219,7 @@ class blogController {
                 message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
               });
             }
-            data.image = `${localhost}${cutPath}`;
+            data.image = getUrl.url;
           }
 
 

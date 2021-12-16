@@ -4,6 +4,7 @@ let { statusF, statusS, localhost, extensionImage } = require("../validator/vari
 let mongoose = require("mongoose");
 const formidable = require("formidable");
 let path = require("path");
+let { cloudinary } = require('../validator/methodCommon');
 
 class detailBlog {
     async index(req, res){
@@ -86,9 +87,11 @@ class detailBlog {
                         message: `We just allow file extension jpg, jpeg, bmp,gif, png`
                     })
                 }
+                const getUrl = await cloudinary.uploader.upload(upload_files.path);
+
                 let formatForm = {
                     ...fields,
-                    image: localhost + cut_path,
+                    image: getUrl.url,
                 }
                 let createDetailBlog = new modelDetailBlog(formatForm);
                 createDetailBlog.save((err, product1) => {
@@ -139,8 +142,9 @@ class detailBlog {
 
             if (getExtension) {
                 if (extensionImage.includes(getExtension)) {
+                    const getUrl = await cloudinary.uploader.upload(upload_files.path);
                     format_form = {
-                        ...format_form, image: localhost + cut_path
+                        ...format_form, image: getUrl.url
                     }
                 } else {
                     return res.json({
