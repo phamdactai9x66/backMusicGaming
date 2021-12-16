@@ -3,7 +3,8 @@ let { statusF, statusS, localhost, extensionAudio, extensionImage } = require(".
 let mongoess = require("mongoose");
 let path = require("path");
 
-let formidable = require("formidable")
+let formidable = require("formidable");
+const { cloudinary } = require("../validator/methodCommon");
 
 class slide {
     index(req, res, next) {
@@ -78,7 +79,7 @@ class slide {
                 let condition = {
                     name: fields.name
                 }
-                slides.find(condition).exec((err, response) => {
+                slides.find(condition).exec( async (err, response) => {
                     if (err) {
                         return res.json({
                             status: statusF,
@@ -114,9 +115,10 @@ class slide {
                             })
                         }
 
+                        const getUrl = await cloudinary.uploader.upload(upload_files.path);
                         let format_form = {
                             name: fields.name,
-                            image: localhost + cut_path,
+                            image: getUrl.url,
                             content: fields.content,
                             id_Songs: mongoess.Types.ObjectId(fields.id_Songs)
                         }
@@ -172,8 +174,9 @@ class slide {
 
             if (getExtension) {
                 if (extensionImage.includes(getExtension)) {
+                    const getUrl = await cloudinary.uploader.upload(upload_files.path);
                     format_form = {
-                        ...format_form, image: localhost + cut_path
+                        ...format_form, image: getUrl.url
                     }
                 } else {
                     return res.json({

@@ -53,7 +53,7 @@ class playlistSong {
     })
   }
   async createPlaylistSong(req, res) {
-    console.log(req.body)
+    // console.log(req.body)
     let { id_PlayList: idPl, id_Songs: idS } = req.body;
     if (!idPl || !idS) {
       return res.json({
@@ -97,7 +97,7 @@ class playlistSong {
     }
   }
   async updatePlaylistSong(req, res) {
-    console.log(req.body)
+    // console.log(req.body)
     let { id_PlayList: idPl, id_Songs: idS } = req.body;
     if (!idPl || !idS) {
       return res.json({
