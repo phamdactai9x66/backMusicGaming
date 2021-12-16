@@ -94,7 +94,7 @@ class blogController {
         title: title,
       };
 
-      modelBlog.findOne(condition).exec(async(err, blogExisted) => {
+      modelBlog.findOne(condition).exec(async (err, blogExisted) => {
         if (err) {
           return res.json({
             message: "Error: " + err,
@@ -194,7 +194,7 @@ class blogController {
         title: title,
       };
 
-      modelBlog.findOne(conditionTitle).exec( async (err, blogExisted) => {
+      modelBlog.findOne(conditionTitle).exec(async (err, blogExisted) => {
         if (err) {
           return res.json({
             message: "Error: " + err,
@@ -210,8 +210,7 @@ class blogController {
           const cutPath = uploadFile.path.slice(indexOfPath);
 
           const checkImage = cutPath.split(".")[1];
-          const getUrl = await cloudinary.uploader.upload(uploadFile.path);
-        if (checkImage) {
+          if (checkImage) {
             if (!extensionImage.includes(checkImage)) {
               return res.json({
                 status: statusF,
@@ -219,6 +218,7 @@ class blogController {
                 message: `We just allow audio extension jpg, jpeg, bmp,gif, png`,
               });
             }
+            const getUrl = await cloudinary.uploader.upload(uploadFile.path);
             data.image = getUrl.url;
           }
 
