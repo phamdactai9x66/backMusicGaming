@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 const decode_jwt = (token) => {
     return jwt.verify(token, process.env.JWT_SECRET)
 }
+let { cloudinary } = require('../validator/methodCommon');
 
 class user {
     async index(req, res, next) {
@@ -99,6 +100,7 @@ class user {
         if (first_name && last_name && email && userName && passWord && confirmPassWord) {
             let find_index_path = form1.path.indexOf("uploads");
             let cut_path = form1.path.slice(find_index_path);
+            // const uploadFile = files['image'];
 
             let getExtension = cut_path.split(".")[1];
             const findUSer = getUsers.find(currenUser => (currenUser.userName === userName))
@@ -126,7 +128,9 @@ class user {
                 }
             }
 
-            req.body.avatar = `${localhost}/${cut_path}`;
+            const getUrl = await cloudinary.uploader.upload(form1.path);
+            console.log(getUrl.url)
+            req.body.avatar = getUrl.url;
 
             delete req.body.confirmPassWord;
 
@@ -272,7 +276,7 @@ class user {
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
 
-        form.parse(req, (err, fields, files) => {
+        form.parse(req, async (err, fields, files) => {
             let { first_name, last_name, email } = fields;
 
             if (first_name && last_name && email) {
@@ -289,8 +293,9 @@ class user {
                 let format_form = { ...fields }
                 if (getExtension) {
                     if (extensionImage.includes(getExtension)) {
+                        const getUrl = await cloudinary.uploader.upload(upload_files.path);
                         format_form = {
-                            ...format_form, avatar: localhost + cut_path
+                            ...format_form, avatar: getUrl.url
                         }
                     } else {
                         return res.json({
