@@ -3,7 +3,8 @@ let { statusF, statusS, localhost, extensionAudio, extensionImage } = require(".
 let mongoess = require("mongoose");
 let path = require("path");
 
-let formidable = require("formidable")
+let formidable = require("formidable");
+const { cloudinary } = require("../validator/methodCommon");
 
 
 class artist {
@@ -83,7 +84,7 @@ class artist {
         form.keepExtensions = true;
         form.maxFieldsSize = 1 * 1024 * 1024;
         form.multiples = true;
-        form.parse(req, (err, fields, files) => {
+        form.parse(req, async (err, fields, files) => {
 
             let { first_Name, last_Name, gender, birth } = fields
 
@@ -109,9 +110,11 @@ class artist {
                     })
                 }
 
+                const getUrl = await cloudinary.uploader.upload(upload_files.path);
+
                 let format_form = {
                     ...fields,
-                    image: localhost + cut_path,
+                    image: getUrl.url,
                 }
                 let createSlide = new modelArtist(format_form);
                 createSlide.save((err, product1) => {
@@ -160,8 +163,9 @@ class artist {
 
             if (getExtension) {
                 if (extensionImage.includes(getExtension)) {
+                    const getUrl = await cloudinary.uploader.upload(upload_files.path);
                     format_form = {
-                        ...format_form, image: localhost + cut_path
+                        ...format_form, image: getUrl.url
                     }
                 } else {
                     return res.json({
