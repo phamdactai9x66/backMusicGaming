@@ -80,6 +80,7 @@ routes(app)
 
 
 //khoi tao server
-server.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+const Port = process.env.PORT || 5000;
+server.listen(Port, () => {
+  console.log(`Example app listening at http://localhost:${Port}`)
 })

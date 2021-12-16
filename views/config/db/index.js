@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 let connect = async () => {
    try {
-      await mongoose.connect('mongodb://localhost:27017/Music_Gaming', {
+      await mongoose.connect('mongodb+srv://dbmsg:tlFiRhiuh22nFPBh@cluster0.roete.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
          useNewUrlParser: true,
          useUnifiedTopology: true,
          useFindAndModify: false,
