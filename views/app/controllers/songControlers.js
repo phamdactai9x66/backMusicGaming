@@ -1,6 +1,7 @@
 const SongModel = require("../models/song");
 let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
 let mongoose = require("mongoose");
+let { cloudinary } = require('../validator/methodCommon');
 let path = require("path");
 const modelArtist = require("../models/artist");
 
@@ -52,8 +53,8 @@ class song {
         if (id_Topic) condition = { ...condition, id_Topic: id_Topic };
         if (id_Categories) condition = { ...condition, id_Categories: id_Categories };
         if (id_album) condition = { ...condition, id_album: id_album };
-        if (status) condition = { ...condition, status: status}
-        
+        if (status) condition = { ...condition, status: status }
+
         SongModel.find(condition).sort(sort_by).limit(_limit * 1).skip((_page - 1) * _limit).select({})
             .exec((err, response) => {
                 if (err || !response) {
@@ -109,7 +110,7 @@ class song {
                 let condition = {
                     title
                 }
-                SongModel.find(condition).exec((error, resp) => {
+                SongModel.find(condition).exec(async (error, resp) => {
                     if (error) {
                         return res.json({
                             status: statusF,
@@ -167,10 +168,12 @@ class song {
                                 message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
                             })
                         }
+                        const getUrlImage = await cloudinary.uploader.upload(upload_files.path);
+                        const getUrlAudio = await cloudinary.uploader.upload(upload_audio.path);
                         let format_form = {
                             ...all_input,
-                            image: localhost + cut_path,
-                            audio: localhost + cut_path_audio,
+                            image: getUrlImage.url,
+                            audio: getUrlAudio.url,
                             id_Topic: mongoose.Types.ObjectId(id_Topic),
                             id_Categories: mongoose.Types.ObjectId(id_Categories),
                             id_album: mongoose.Types.ObjectId(id_album),
@@ -281,8 +284,9 @@ class song {
 
             if (getExtension_audio) {
                 if (extensionAudio.includes(getExtension_audio)) {
+                    const getUrlAudio = await cloudinary.uploader.upload(upload_audio.path);
                     format_form = {
-                        ...format_form, audio: localhost + cut_path_audio
+                        ...format_form, audio: getUrlAudio.url
                     }
                 } else {
                     return res.json({
@@ -294,8 +298,9 @@ class song {
             }
             if (getExtension) {
                 if (extensionImage.includes(getExtension)) {
+                    const getUrlImage = await cloudinary.uploader.upload(upload_files.path);
                     format_form = {
-                        ...format_form, image: localhost + cut_path
+                        ...format_form, image: getUrlImage.url
                     }
                 } else {
                     return res.json({
@@ -326,23 +331,23 @@ class song {
     }
     checkpass(req, res) {
         let condition = {
-          _id: mongoose.Types.ObjectId(req.params.idsong),
+            _id: mongoose.Types.ObjectId(req.params.idsong),
         };
-        SongModel.findOneAndUpdate(condition, {status: true}, {new:true})
-        .exec((err, newData) => {
-          if (err) {
-            return res.json({
-              status: statusF,
-              data: [],
-              message: "Update blog failed",
-            });
-          }
-          res.json({
-            status: statusS,
-            data: newData,
-            message: "Update blog successfully.",
-          });
-        })
-      }
+        SongModel.findOneAndUpdate(condition, { status: true }, { new: true })
+            .exec((err, newData) => {
+                if (err) {
+                    return res.json({
+                        status: statusF,
+                        data: [],
+                        message: "Update blog failed",
+                    });
+                }
+                res.json({
+                    status: statusS,
+                    data: newData,
+                    message: "Update blog successfully.",
+                });
+            })
+    }
 }
 module.exports = new song;

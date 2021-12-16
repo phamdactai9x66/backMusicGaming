@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const formidable = require("formidable");
 const path = require("path");
 const { statusF, statusS, extensionImage, extensionAudio } = require("../validator/variableCommon");
+let { cloudinary } = require('../validator/methodCommon');
 
 class playlist {
   async index(req, res, next) {
@@ -99,7 +100,7 @@ class playlist {
         name: fields.name,
       };
 
-      modelPlaylist.findOne(condition).exec((err, playlistExisted) => {
+      modelPlaylist.findOne(condition).exec(async (err, playlistExisted) => {
         if (err) {
           return res.json({
             message: "Error: " + err,
@@ -136,10 +137,11 @@ class playlist {
             message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
           })
         }
+        const getUrlImage = await cloudinary.uploader.upload(uploadFile.path);
 
         const data = {
           ...fields,
-          image: `http://localhost:5000/${cutPath}`,
+          image: getUrlImage.url,
         };
         let createPlaylist = new modelPlaylist(data);
         createPlaylist.save((err, data) => {
@@ -202,7 +204,7 @@ class playlist {
     form.maxFieldsSize = 1 * 1024 * 1024;
     form.multiples = true;
 
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, async (err, fields, files) => {
       if (err) {
         return res.json({
           message: "Error 400. Add New Play list failed.",
@@ -235,9 +237,10 @@ class playlist {
 
       if (checkImage) {
         if (extensionImage.includes(checkImage)) {
+          const getUrlImage = await cloudinary.uploader.upload(uploadFile.path);
           data = {
             ...fields,
-            image: `http://localhost:5000/${cutPath}`,
+            image: getUrlImage.url,
           };
         } else {
           return res.json({
@@ -267,6 +270,6 @@ class playlist {
         });
     });
   }
-  
+
 }
 module.exports = new playlist();

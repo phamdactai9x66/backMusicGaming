@@ -1,5 +1,5 @@
 const songCateModel = require("../models/songCate");
-let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage, cloudinary } = require("../validator/variableCommon");
 let mongoess = require("mongoose");
 let path = require("path");
 
@@ -92,7 +92,7 @@ class songCate {
                 let condition = {
                     name: all_input.name
                 }
-                songCateModel.find(condition).exec((error, response) => {
+                songCateModel.find(condition).exec(async (error, response) => {
                     if (error) {
                         return res.json({
                             status: statusF,
@@ -128,11 +128,11 @@ class songCate {
                                 message: `We just allow audio extension jpg, jpeg, bmp,gif, png`
                             })
                         }
-
+                        const getUrl = await cloudinary.uploader.upload(upload_files.path);
                         let format_form = {
                             name: all_input.name,
 
-                            image: localhost + cut_path,
+                            image: getUrl.url,
                             id_Topic: mongoess.Types.ObjectId(all_input.id_Topic)
                         }
                         let create_playList = new songCateModel(format_form);
@@ -189,8 +189,9 @@ class songCate {
 
             if (getExtension) {
                 if (extensionImage.includes(getExtension)) {
+                    const getUrl = await cloudinary.uploader.upload(upload_files.path);
                     format_form = {
-                        ...format_form, image: localhost + cut_path
+                        ...format_form, image: getUrl.url
                     }
                 } else {
                     return res.json({
