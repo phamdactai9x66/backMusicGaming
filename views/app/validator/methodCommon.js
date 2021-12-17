@@ -130,6 +130,17 @@ const encode_jwt = (idUser) => {
         exp: new Date().setDate(new Date().getDate() + 10)
     }, process.env.JWT_SECRET)
 }
+const encode_jwt2 = (idUser) => {
+    var dt = new Date();
+    dt.setHours( dt.getHours() + 6 );
+
+    return jwt.sign({
+        iss: "Pham dac tai",
+        sub: idUser,
+        iat: new Date().getTime(),
+        exp: dt
+    }, process.env.JWT_SECRET)
+}
 const decode_jwt = async (token) => {
     return await jwt.verify(token, process.env.JWT_SECRET)
 }
@@ -295,7 +306,7 @@ const checkAdmin = (input_role = 2) => {
 const sendMailer = async (userData) => {
 
     if (!userData.email) return
-    let hash = encode_jwt(userData._id);
+    let hash = encode_jwt2(userData._id);
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -322,7 +333,7 @@ const sendMailer = async (userData) => {
 const sendMailer2 = async (userData2) => {
     console.log(userData2.email)
     if (!userData2.email) return
-    let hash2 = encode_jwt(userData2._id);
+    let hash2 = encode_jwt2(userData2._id);
     let transporter2 = nodemailer.createTransport({
         service: "gmail",
         auth: {
