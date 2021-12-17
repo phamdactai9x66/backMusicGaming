@@ -1,9 +1,10 @@
 const songCateModel = require("../models/songCate");
-let { statusF, statusS, localhost, extensionAudio, extensionImage, cloudinary } = require("../validator/variableCommon");
+let { statusF, statusS, localhost, extensionAudio, extensionImage } = require("../validator/variableCommon");
 let mongoess = require("mongoose");
 let path = require("path");
 
 let formidable = require("formidable")
+let { cloudinary } = require('../validator/methodCommon');
 
 
 class songCate {
