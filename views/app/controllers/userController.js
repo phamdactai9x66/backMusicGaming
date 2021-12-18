@@ -228,7 +228,6 @@ class user {
                                 message: "Reset password failed",
                             });
                         }
-                        newData.passWord = undefined
                         res.json({
                             status: statusS,
                             data: newData,
