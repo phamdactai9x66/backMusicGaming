@@ -138,7 +138,7 @@ const encode_jwt2 = (idUser) => {
         iss: "Pham dac tai",
         sub: idUser,
         iat: new Date().getTime(),
-        exp: dt
+        exp: dt.getTime()
     }, process.env.JWT_SECRET)
 }
 const decode_jwt = async (token) => {
