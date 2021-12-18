@@ -209,32 +209,47 @@ class user {
     }
     async resetPassword(req, res) {
         let { idUser, hash } = req.params;
-        console.log(req.body)
+        // console.log(req.body)
         let { passWord, confirmPassWord } = req.body;
 
         let decodeTokenEmail = await decode_jwt(hash, process.env.JWT_SECRET);
-
-        if (idUser == decodeTokenEmail.sub) {
-            if (passWord && confirmPassWord) {
-                let general_sal = await bcrypt.genSalt(10);
-
-                let passWordHash = await bcrypt.hash(passWord, general_sal);
-                modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, { passWord: passWordHash }, { new: true })
-                    .exec((err, newData) => {
-                        if (err) {
-                            return res.json({
-                                status: statusF,
-                                data: [],
-                                message: "Reset password failed",
+        const user = await modelUser.findById({ _id: mongoose.Types.ObjectId(idUser)});
+        
+        if(hash === user.hashed){
+            return res.json({
+                status: statusF,
+                data: [],
+                message: "Đặt lại mật khẩu thất bại, token hết hạn!",
+            });
+        }else{
+            if (idUser == decodeTokenEmail.sub) {
+                if (passWord && confirmPassWord) {
+                    let general_sal = await bcrypt.genSalt(10);
+    
+                    let passWordHash = await bcrypt.hash(passWord, general_sal);
+                    modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, { passWord: passWordHash, hashed: hash }, { new: true })
+                        .exec((err, newData) => {
+                            if (err) {
+                                return res.json({
+                                    status: statusF,
+                                    data: [],
+                                    message: "Reset password failed",
+                                });
+                            }
+                            newData.hashed = undefined;
+                            res.json({
+                                status: statusS,
+                                data: newData,
+                                message: "Đặt lại mật khẩu thành công.",
                             });
-                        }
-                        newData.passWord = undefined
-                        res.json({
-                            status: statusS,
-                            data: newData,
-                            message: "Reset password successfully.",
-                        });
-                    })
+                        })
+                } else {
+                    res.json({
+                        status: statusF,
+                        data: [],
+                        message: "Something is wrong.",
+                    });
+                }
             } else {
                 res.json({
                     status: statusF,
@@ -242,12 +257,6 @@ class user {
                     message: "Something is wrong.",
                 });
             }
-        } else {
-            res.json({
-                status: statusF,
-                data: [],
-                message: "Something is wrong.",
-            });
         }
     }
     deleteOne(req, res) {
@@ -361,7 +370,6 @@ class user {
                                 message: "Active user failed",
                             });
                         }
-                        newData.passWord = undefined
                         return res.json({
                             status: statusS,
                             data: newData,
