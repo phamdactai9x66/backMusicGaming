@@ -13,7 +13,7 @@ const song = new Schema({
         type: Number, default: 0
     },
     audio: { type: String },
-    active: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
     describe: {
         type: String
     },
