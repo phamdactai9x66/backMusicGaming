@@ -361,7 +361,6 @@ class user {
                                 message: "Active user failed",
                             });
                         }
-                        newData.passWord = undefined
                         return res.json({
                             status: statusS,
                             data: newData,
