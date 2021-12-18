@@ -103,7 +103,6 @@ class song {
         form1.multiples = true;
         form1.parse(req, (err, all_input, files) => {
             let { title, view, active, describe, id_Topic, id_Categories, id_album, day_release } = all_input;
-
             if (title && view != undefined && files["image"] && files["audio"] && active
                 && describe && id_Topic && id_Categories && id_album && day_release
             ) {
@@ -169,7 +168,7 @@ class song {
                             })
                         }
                         const getUrlImage = await cloudinary.uploader.upload(upload_files.path);
-                        const getUrlAudio = await cloudinary.uploader.upload(upload_audio.path);
+                        const getUrlAudio = await cloudinary.uploader.upload(upload_audio.path, { resource_type: 'auto', folder: 'Audio' });
                         let format_form = {
                             ...all_input,
                             image: getUrlImage.url,
@@ -284,7 +283,7 @@ class song {
 
             if (getExtension_audio) {
                 if (extensionAudio.includes(getExtension_audio)) {
-                    const getUrlAudio = await cloudinary.uploader.upload(upload_audio.path);
+                    const getUrlAudio = await cloudinary.uploader.upload(upload_audio.path, { resource_type: 'auto', folder: 'Audio' });
                     format_form = {
                         ...format_form, audio: getUrlAudio.url
                     }
