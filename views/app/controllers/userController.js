@@ -36,8 +36,8 @@ class user {
             if (typeof name == "string") {
                 // console.log(name)
                 let filterUser = getUsers.filter(currenValue => {
-                    let { first_name, last_name } = currenValue
-                    let getName = `${first_name} ${last_name}`.replace(/\s/img, "");
+                    let { userName } = currenValue
+                    let getName = userName
                     let transformName = name.replace(/\s/img, "");
 
                     return role ? (getName.indexOf(transformName) != -1 && currenValue.role == role) :
@@ -213,19 +213,19 @@ class user {
         let { passWord, confirmPassWord } = req.body;
 
         let decodeTokenEmail = await decode_jwt(hash, process.env.JWT_SECRET);
-        const user = await modelUser.findById({ _id: mongoose.Types.ObjectId(idUser)});
-        
-        if(hash === user.hashed){
+        const user = await modelUser.findById({ _id: mongoose.Types.ObjectId(idUser) });
+
+        if (hash === user.hashed) {
             return res.json({
                 status: statusF,
                 data: [],
                 message: "Đặt lại mật khẩu thất bại, token hết hạn!",
             });
-        }else{
+        } else {
             if (idUser == decodeTokenEmail.sub) {
                 if (passWord && confirmPassWord) {
                     let general_sal = await bcrypt.genSalt(10);
-    
+
                     let passWordHash = await bcrypt.hash(passWord, general_sal);
                     modelUser.findOneAndUpdate({ _id: decodeTokenEmail.sub }, { passWord: passWordHash, hashed: hash }, { new: true })
                         .exec((err, newData) => {

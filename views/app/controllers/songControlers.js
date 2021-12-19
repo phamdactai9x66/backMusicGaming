@@ -102,8 +102,8 @@ class song {
         form1.maxFieldsSize = 1 * 1024 * 1024;
         form1.multiples = true;
         form1.parse(req, (err, all_input, files) => {
-            let { title, view, active, describe, id_Topic, id_Categories, id_album, day_release } = all_input;
-            if (title && view != undefined && files["image"] && files["audio"] && active
+            let { title, view, describe, id_Topic, id_Categories, id_album, day_release } = all_input;
+            if (title && view != undefined && files["image"] && files["audio"]
                 && describe && id_Topic && id_Categories && id_album && day_release
             ) {
                 let condition = {
